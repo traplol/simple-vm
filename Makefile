@@ -1,7 +1,7 @@
 CC:=clang
-CFLAGS:= -Wall -pedantic -pedantic-errors -Wextra -g -std=c99
+CFLAGS:= -Werror -Wall -pedantic -pedantic-errors -Wextra -g -std=c99
 LDFLAGS:=
-SOURCES:= vm.c helpers.c irm.c irr.c
+SOURCES:= vm.c helpers.c irm.c irr.c smart-compile.c
 OBJECTS:= $(SOURCES:.c=.o)
 EXECUTABLE:= vm
 

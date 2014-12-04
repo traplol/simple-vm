@@ -23,6 +23,8 @@ char *op_to_str(opcode_t op) {
         case SLL:  return "sll";
         case SRL:  return "srl";
         case MOV:  return "mov";
+        case LW:   return "lw";
+        case SW:   return "sw";
 
         case ADDI: return "addi";
         case MULI: return "muli";
@@ -30,6 +32,8 @@ char *op_to_str(opcode_t op) {
         case LI:   return "li";
 
         case JR:   return "jr";
+        case PUSH: return "push";
+        case POP:  return "pop";
 
         case J:    return "j";
         case JS:   return "js";

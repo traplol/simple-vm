@@ -7,6 +7,7 @@
 #include "irr.h"
 #include "irm.h"
 #include "helpers.h"
+#include "smart-compile.h"
 
 #define MEMSIZE (64000)
 #define TEXT_SECTION_START (200)
@@ -33,6 +34,39 @@ void dump_registers(void) {
     }
 }
 
+void dump_text_section(void) {
+    int col = 0;
+    for (size_t i = 0; i < TEXT_SECTION_SIZE; ++i, ++col) {
+        if (col == 11) {
+            printf("\n");
+            col = 0;
+        }
+        printf(" 0x%08x ", memspace[TEXT_SECTION_START + i]);
+    }
+    printf("\n");
+}
+
+void dump_data_section(void) {
+    int col = 0;
+    unsigned int *tmp = &memspace[DATA_SECTION_START];
+    unsigned int *end = &memspace[DATA_SECTION_START + DATA_SECTION_SIZE];
+    char data, *start = (char*)tmp;
+    for (; (unsigned int*)start != end; ++start, ++col) {
+        data = *start;
+        if (col == 19) {
+            printf("\n");
+            col = 0;
+        }
+        if (is_printable(data)) {
+            printf("%2c ", data);
+        }
+        else {
+            printf("%02x ", data);
+        }
+    }
+    printf("\n");
+}
+
 void load_program(unsigned int *program, size_t program_size) {
     if (program_size > TEXT_SECTION_SIZE) {
         fputs("Program size too big.\n", stderr);
@@ -44,6 +78,16 @@ void load_program(unsigned int *program, size_t program_size) {
 }
 
 void load_data(char *data, size_t data_size) {
+    if (data_size > DATA_SECTION_SIZE) {
+        fputs("Data size too big.\n", stderr);
+        exit(1);
+    }
+    unsigned int *tmp = &memspace[DATA_SECTION_START];
+    char *start = (char*)tmp;
+    char *end = (char*)tmp + data_size;
+    for (; start != end; ++start, ++data) {
+        *start = *data;
+    }
 }
 
 void run(void) {
@@ -61,24 +105,30 @@ void init(void) {
     registers[PC] = TEXT_SECTION_START;
 }
 
+
 int main(void) {
     unsigned int *program = calloc(50, sizeof *program);
     int i = 0;
     /* Simple factorial(12) (Largest signed 32 bit) program. */
-    program[i++] = compile_irm(LI, G0, 1);   /* Start */
-    program[i++] = compile_irm(LI, G1, 13);  /* End */
-    program[i++] = compile_irm(LI, G3, 1);   /* Product */
-    program[i++] = compile_irr(CMP, G0, G1); /* Check if G0 = G1. */
-    program[i++] = compile_irm(JZS, NUL, 4); /* If compare succeeds, exit loop. */
-    program[i++] = compile_irr(MUL, G3, G0); /* Mul the product by counter. */
-    program[i++] = compile_irm(ADDI, G0, 1); /* Increment counter. */
-    program[i++] = compile_irm(JS, NUL, -4); /* Jump to compare */
-
-
+    program[i++] = smart_compile(LI, G0, 1);   /* Start */
+    program[i++] = smart_compile(LI, G1, 6);   /* End */
+    program[i++] = smart_compile(LI, G3, 1);   /* Product */
+    program[i++] = smart_compile(CMP, G0, G1); /* Check if G0 = G1. */
+    program[i++] = smart_compile(JZS, NUL, 4); /* If compare succeeds, exit loop. */
+    program[i++] = smart_compile(MUL, G3, G0); /* Mul the product by counter. */
+    program[i++] = smart_compile(ADDI, G0, 1); /* Increment counter. */
+    program[i++] = smart_compile(JS, NUL, -4); /* Jump to compare */
     program[i++] = HALT;
     init();
     load_program(program, 50);
-    load_data(NULL, 0);
+
+    char *test_data = "Hello world!!";
+    load_data(test_data, strlen(test_data));
+
+    //dump_text_section();
+    //dump_data_section();
+
+
     free(program);
     run();
     dump_registers();
@@ -86,7 +136,9 @@ int main(void) {
 }
 
 void execute(unsigned int ins) {
-    int op, r1, r2, imm;
+    opcode_t op;
+    register_t r1, r2;
+    int imm;
 
     op = get_opcode(ins);
     r1 = get_r1(ins);
@@ -95,6 +147,10 @@ void execute(unsigned int ins) {
 
 
     switch (op) {
+        case OPCODE_COUNT:
+        default:
+            fputs("'NOT AN OPCODE'", stderr);
+            abort();
         case HALT:
             program_halted = 1;
             break;
@@ -142,6 +198,12 @@ void execute(unsigned int ins) {
             registers[r1] = registers[r2];
             registers[PC]++;
             break;
+        case LW:
+            fputs("LW NYI", stderr);
+            abort();
+        case SW:
+            fputs("SW NYI", stderr);
+            abort();
 
         case ADDI:
             registers[r1] += imm;
@@ -163,6 +225,12 @@ void execute(unsigned int ins) {
         case JR:
             registers[PC] = registers[r1];
             break;
+        case PUSH:
+            fputs("PUSH NYI", stderr);
+            abort();
+        case POP:
+            fputs("POP NYI", stderr);
+            abort();
 
         case J:
             registers[PC] = imm;
@@ -189,7 +257,13 @@ void execute(unsigned int ins) {
             }
             break;
         case CALL:
+            fputs("CALL NYI", stderr);
+            abort();
+        case PUSHI:
+            fputs("PUSHI NYI", stderr);
+            abort();
             break;
+
     }
 }
 

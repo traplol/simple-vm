@@ -17,6 +17,12 @@ char *str_cat(unsigned long count, ...);
 
 void assert(int cond, char *msg);
 
+void dissassemble(unsigned int *program, size_t program_size);
+
+static inline int is_printable(char c) {
+    return c > 0x1f && c < 0x7f;
+}
+
 static inline int get_opcode(unsigned int ins) {
     return (ins & (OPCODE_MASK << OPCODE_SHIFT)) >> OPCODE_SHIFT;
 }

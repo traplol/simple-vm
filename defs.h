@@ -14,8 +14,11 @@
 #define OPCODE_SHIFT (5 + 5 + 16)
 #define SIGN_BIT_SHIFT_21BIT (11)
 
+
 typedef enum opcode {
+    /* Halt, stops program execution. */
     HALT = 0,
+    /* Nop, does nothing. */
     NOP,
 
     /* register to register */
@@ -31,6 +34,8 @@ typedef enum opcode {
     SLL,
     SRL,
     MOV,
+    LW,
+    SW,
 
     /* immediate to register */
     /* oooooo rrrrr mmmmmmmmmmmmmmmmmmmmm */
@@ -40,12 +45,14 @@ typedef enum opcode {
     DIVI,
     LI,
 
-    /* jmp register */
+    /* register no immediate, equiv. to irm or irr with second operand as NUL */
     /* oooooo rrrrr 000000000000000000000 */
     /*    6     5            21           */
     JR,
+    PUSH,
+    POP,
 
-    /* jmp immediate */
+    /* immediate no register, equiv to irm with NUL Register. */
     /* oooooo 00000 mmmmmmmmmmmmmmmmmmmmm  */
     /*    6                  21            */
     J,
@@ -53,6 +60,7 @@ typedef enum opcode {
     JZ,
     JZS,
     CALL,
+    PUSHI,
 
     /* The number of opcodes. */
     OPCODE_COUNT
@@ -63,10 +71,9 @@ typedef enum registers {
     NUL = 0,                                    /* 1 */
     /* General purpose 32-bit registers. */
     G0, G1, G2, G3, G4, G5, G6, G7,             /* 8 */
+    G8, G9, G10, G11,                           /* 4 */
     /* 32-bit floating point registers. */
     F0, F1, F2, F3,                             /* 4 */
-    /* 64-bit registers. */
-    L0, L1, L2, L3,                             /* 4 */
     /* Return registers. */
     R0, R1,                                     /* 2 */
     /* Comparison flag. */
