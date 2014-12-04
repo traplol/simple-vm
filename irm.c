@@ -9,7 +9,7 @@ irm_t *make_irm(opcode_t op, register_t r, signed int imm) {
     irm->r = r;
     irm->imm = imm;
     irm->op_str = op_to_str(op);
-    irm->r_str = reg_to_str(r1);
+    irm->r_str = reg_to_str(r);
     irm->imm_str = imm_to_str(imm, "%d");
     irm->compiled_str = str_cat(5, irm->op_str, " ", irm->r_str, ", ", irm->imm_str);
     return irm;
@@ -58,5 +58,28 @@ unsigned int compile_irm(opcode_t op, register_t r, signed int imm) {
     imm |= (r << R1_SHIFT);
     /* opcode */
     return imm | (op << OPCODE_SHIFT);
+}
+
+/* Tests that a compiled irm format decompiles back to the arguments passes. */
+void test_irm(opcode_t test_op, register_t test_reg, signed int test_imm) {
+    unsigned int test = compile_irm(test_op, test_reg, test_imm);
+    irm_t *irm = decompile_irm(test);
+
+    char *op_s, *r_s, *imm_s, *test_imm_s;
+    test_imm_s = imm_to_str(test_imm, "%d");
+
+    op_s = str_cat(4, "irm: ", irm->op_str, " != ", op_to_str(test_op));
+    r_s = str_cat(4, "irm: ", irm->r_str, " != ", reg_to_str(test_reg));
+    imm_s = str_cat(4, "irm: ", irm->imm_str, " != ", test_imm_s);
+
+    assert(irm->op == test_op, op_s);
+    assert(irm->r == test_reg, r_s);
+    assert(irm->imm == test_imm, imm_s);
+
+    free(op_s);
+    free(r_s);
+    free(imm_s);
+    free(test_imm_s);
+    free_irm(&irm);
 }
 

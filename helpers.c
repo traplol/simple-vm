@@ -6,61 +6,73 @@
 
 char *op_to_str(opcode_t op) {
     switch (op) {
-        case nop:  return "nop";
-        case add:  return "add";
-        case mul:  return "mul";
- //       case div:  return "div";
-        case cmp:  return "cmp";
-        case and:  return "and";
-        case or:   return "or";
-        case xor:  return "xor";
-        case sll:  return "sll";
-        case srl:  return "srl";
+        case OPCODE_COUNT:
+        default:
+            return "'not an opcode'";
 
-        case addi: return "addi";
-        case muli: return "muli";
-        case divi: return "divi";
-        case li:   return "li";
-        case la:   return "la";
+        case HALT: return "halt";
+        case NOP:  return "nop";
 
-        case jr:   return "jr";
-        case j:    return "j";
-        case jz:   return "jz";
+        case ADD:  return "add";
+        case MUL:  return "mul";
+        case DIV:  return "div";
+        case CMP:  return "cmp";
+        case AND:  return "and";
+        case OR:   return "or";
+        case XOR:  return "xor";
+        case SLL:  return "sll";
+        case SRL:  return "srl";
+        case MOV:  return "mov";
+
+        case ADDI: return "addi";
+        case MULI: return "muli";
+        case DIVI: return "divi";
+        case LI:   return "li";
+
+        case JR:   return "jr";
+
+        case J:    return "j";
+        case JS:   return "js";
+        case JZ:   return "jz";
+        case JZS:  return "jzs";
+        case CALL: return "call";
     }
-    return "'not an opcode'";
 }
 
 char *reg_to_str(register_t r) {
     switch (r) {
-        case null: return "null";
-        case g0:   return "g0";
-        case g1:   return "g1";
-        case g2:   return "g2";
-        case g3:   return "g3";
-        case g4:   return "g4";
-        case g5:   return "g5";
-        case g6:   return "g6";
-        case g7:   return "g7";
+        case REGISTER_COUNT:
+        default:
+            return "'not a register'";
 
-        case f0:   return "f0";
-        case f1:   return "f1";
-        case f2:   return "f2";
-        case f3:   return "f3";
+        case NUL:  return "nul";
+        case G0:   return "g0";
+        case G1:   return "g1";
+        case G2:   return "g2";
+        case G3:   return "g3";
+        case G4:   return "g4";
+        case G5:   return "g5";
+        case G6:   return "g6";
+        case G7:   return "g7";
 
-        case l0:   return "l0";
-        case l1:   return "l1";
-        case l2:   return "l2";
-        case l3:   return "l3";
+        case F0:   return "f0";
+        case F1:   return "f1";
+        case F2:   return "f2";
+        case F3:   return "f3";
 
-        case r0:   return "r0";
-        case r1:   return "r1";
+        case L0:   return "l0";
+        case L1:   return "l1";
+        case L2:   return "l2";
+        case L3:   return "l3";
 
-        case z:    return "z";
-        case sp:   return "sp";
-        case fp:   return "fp";
-        case pc:   return "pc";
+        case R0:   return "r0";
+        case R1:   return "r1";
+
+        case Z:    return "z";
+        case SP:   return "sp";
+        case FP:   return "fp";
+        case PC:   return "pc";
     }
-    return "'not a register'";
 }
 
 char *imm_to_str(signed int imm, char *fmt) {

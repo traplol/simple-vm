@@ -17,5 +17,22 @@ char *str_cat(unsigned long count, ...);
 
 void assert(int cond, char *msg);
 
+static inline int get_opcode(unsigned int ins) {
+    return (ins & (OPCODE_MASK << OPCODE_SHIFT)) >> OPCODE_SHIFT;
+}
+static inline int get_r1(unsigned int ins) {
+    return (ins & (REGISTER_MASK << R1_SHIFT)) >> R1_SHIFT;
+}
+static inline int get_r2(unsigned int ins) {
+    return (ins & (REGISTER_MASK << R2_SHIFT)) >> R2_SHIFT;
+}
+static inline int get_imm(unsigned int ins) {
+    int sign_bit = ins & SIGN_BIT_MASK_21BIT;
+    if (sign_bit) {
+        sign_bit |= SIGN_BIT_MASK_21BIT_TO_32BIT;
+    }
+    return (ins & IMMEDIATE_MASK) | sign_bit;
+}
+
 #endif
 

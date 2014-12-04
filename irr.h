@@ -18,5 +18,8 @@ void free_irr(irr_t **irr);
 irr_t *decompile_irr(unsigned int ins);
 unsigned int compile_irr(opcode_t op, register_t r1, register_t r2);
 
+/* Tests that a compiled irr format decompiles back to the arguments passes. */
+void test_irr(opcode_t test_op, register_t test_r1, register_t test_r2);
+
 #endif
 
