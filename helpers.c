@@ -58,16 +58,15 @@ char *reg_to_str(register_t r) {
         case G5:   return "g5";
         case G6:   return "g6";
         case G7:   return "g7";
+        case G8:   return "g8";
+        case G9:   return "g9";
+        case G10:   return "g10";
+        case G11:   return "g11";
 
         case F0:   return "f0";
         case F1:   return "f1";
         case F2:   return "f2";
         case F3:   return "f3";
-
-        case L0:   return "l0";
-        case L1:   return "l1";
-        case L2:   return "l2";
-        case L3:   return "l3";
 
         case R0:   return "r0";
         case R1:   return "r1";
