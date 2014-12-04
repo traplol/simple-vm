@@ -17,7 +17,7 @@ char *str_cat(unsigned long count, ...);
 
 void assert(int cond, char *msg);
 
-void dissassemble(unsigned int *program, size_t program_size);
+void print_dissassembly(unsigned int ins);
 
 static inline int is_printable(char c) {
     return c > 0x1f && c < 0x7f;

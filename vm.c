@@ -67,6 +67,12 @@ void dump_data_section(void) {
     printf("\n");
 }
 
+void disassemble_program(unsigned int *program, size_t program_size) {
+    for (size_t i = 0; i < program_size; ++i) {
+        print_dissassembly(program[i]);
+    }
+}
+
 void load_program(unsigned int *program, size_t program_size) {
     if (program_size > TEXT_SECTION_SIZE) {
         fputs("Program size too big.\n", stderr);
@@ -120,14 +126,15 @@ int main(void) {
     program[i++] = smart_compile(JS, NUL, -4); /* Jump to compare */
     program[i++] = HALT;
     init();
-    load_program(program, 50);
+    load_program(program, i);
 
     char *test_data = "Hello world!!";
-    load_data(test_data, strlen(test_data));
+    load_data(test_data, strlen(test_data)+1);
 
     //dump_text_section();
     //dump_data_section();
-
+    disassemble_program(program, i);
+    printf("\n");
 
     free(program);
     run();
@@ -199,11 +206,13 @@ void execute(unsigned int ins) {
             registers[PC]++;
             break;
         case LW:
-            fputs("LW NYI", stderr);
-            abort();
+            registers[r1] = memspace[registers[r2]];
+            registers[PC]++;
+            break;
         case SW:
-            fputs("SW NYI", stderr);
-            abort();
+            memspace[registers[r2]] = registers[r1];
+            registers[PC]++;
+            break;
 
         case ADDI:
             registers[r1] += imm;
@@ -226,11 +235,15 @@ void execute(unsigned int ins) {
             registers[PC] = registers[r1];
             break;
         case PUSH:
-            fputs("PUSH NYI", stderr);
-            abort();
+            memspace[registers[SP]] = registers[r1];
+            registers[SP]--;
+            registers[PC]++;
+            break;
         case POP:
-            fputs("POP NYI", stderr);
-            abort();
+            registers[r1] = memspace[registers[SP]];
+            registers[SP]++;
+            registers[PC]++;
+            break;
 
         case J:
             registers[PC] = imm;
@@ -257,11 +270,17 @@ void execute(unsigned int ins) {
             }
             break;
         case CALL:
-            fputs("CALL NYI", stderr);
-            abort();
+            /* Push return address to stack */
+            memspace[registers[SP]] = registers[PC] + 1;
+            /* Save stack pointer to return address in frame pointer. */
+            registers[FP] = registers[SP];
+            registers[SP]--;
+            registers[PC] = imm;
+            break;
         case PUSHI:
-            fputs("PUSHI NYI", stderr);
-            abort();
+            memspace[registers[SP]] = imm;
+            registers[SP]--;
+            registers[PC]++;
             break;
 
     }
