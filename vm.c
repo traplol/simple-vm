@@ -68,8 +68,8 @@ int main(void) {
     program[i++] = compile_irm(LI, G0, 1);   /* Start */
     program[i++] = compile_irm(LI, G1, 13);  /* End */
     program[i++] = compile_irm(LI, G3, 1);   /* Product */
-    program[i++] = compile_irr(CMP, G0, G1); /* Check if G0 = G1 */
-    program[i++] = compile_irm(JZS, NUL, 4); /* If comparison fails, exit loop. */
+    program[i++] = compile_irr(CMP, G0, G1); /* Check if G0 = G1. */
+    program[i++] = compile_irm(JZS, NUL, 4); /* If compare succeeds, exit loop. */
     program[i++] = compile_irr(MUL, G3, G0); /* Mul the product by counter. */
     program[i++] = compile_irm(ADDI, G0, 1); /* Increment counter. */
     program[i++] = compile_irm(JS, NUL, -4); /* Jump to compare */
