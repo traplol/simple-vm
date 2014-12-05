@@ -117,9 +117,9 @@ int main(void) {
     int i = 0;
     /* Simple factorial(12) (Largest signed 32 bit) program. */
     program[i++] = smart_compile(LI, G0, 1);   /* Start */
-    program[i++] = smart_compile(LI, G1, 6);   /* End */
+    program[i++] = smart_compile(LI, G1, 5);   /* End */
     program[i++] = smart_compile(LI, G3, 1);   /* Product */
-    program[i++] = smart_compile(CMP, G0, G1); /* Check if G0 = G1. */
+    program[i++] = smart_compile(GT, G0, G1); /* Check if G0 > G1. */
     program[i++] = smart_compile(JZS, NUL, 4); /* If compare succeeds, exit loop. */
     program[i++] = smart_compile(MUL, G3, G0); /* Mul the product by counter. */
     program[i++] = smart_compile(ADDI, G0, 1); /* Increment counter. */
@@ -177,8 +177,28 @@ void execute(unsigned int ins) {
             registers[r1] /= registers[r2];
             registers[PC]++;
             break;
-        case CMP:
+        case EQ:
             registers[Z] = registers[r1] == registers[r2];
+            registers[PC]++;
+            break;
+        case NE:
+            registers[Z] = registers[r1] != registers[r2];
+            registers[PC]++;
+            break;
+        case LT:
+            registers[Z] = registers[r1] < registers[r2];
+            registers[PC]++;
+            break;
+        case LE:
+            registers[Z] = registers[r1] <= registers[r2];
+            registers[PC]++;
+            break;
+        case GT:
+            registers[Z] = registers[r1] > registers[r2];
+            registers[PC]++;
+            break;
+        case GE:
+            registers[Z] = registers[r1] >= registers[r2];
             registers[PC]++;
             break;
         case AND:

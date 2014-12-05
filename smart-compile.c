@@ -20,7 +20,12 @@ unsigned int smart_compile(opcode_t opcode, int operand1, int operand2) {
         case ADD:
         case MUL:
         case DIV:
-        case CMP:
+        case EQ:
+        case NE:
+        case LT:
+        case LE:
+        case GT:
+        case GE:
         case AND:
         case OR:
         case XOR:
