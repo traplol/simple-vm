@@ -28,5 +28,9 @@
 *.x86_64
 *.hex
 
+# Directories
+bin/
+obj/
+
 #YCM
 .ycm_*
