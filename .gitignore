@@ -22,6 +22,7 @@
 
 # Executables
 vm
+assembler
 *.exe
 *.out
 *.app
