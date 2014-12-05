@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include "smart-compile.h"
 
@@ -25,8 +26,6 @@ char *to_lower(char *str) {
     return ret;
 }
 
-opcode_t str_get_opcode(char *op) {
-}
 
 instruction_t compile(char *str_ins) {
     instruction_t ins;
