@@ -8,7 +8,7 @@ char *op_to_str(opcode_t op);
 char *reg_to_str(register_t r);
 /* Returns the immediate as a readable string.
  * Note: This needs to be freed. */
-char *imm_to_str(signed int imm, char *fmt);
+char *imm_to_str(int imm, char *fmt);
 
 
 /* Returns a new string with all of the strings passes concatenated. 

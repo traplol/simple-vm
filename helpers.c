@@ -9,7 +9,6 @@
 char *op_to_str(opcode_t op) {
     switch (op) {
         case OPCODE_COUNT:
-        default:
             return "'not an opcode'";
 
         case HALT: return "halt";
@@ -49,7 +48,6 @@ char *op_to_str(opcode_t op) {
 char *reg_to_str(register_t r) {
     switch (r) {
         case REGISTER_COUNT:
-        default:
             return "'not a register'";
 
         case NUL:  return "nul";
@@ -81,7 +79,7 @@ char *reg_to_str(register_t r) {
     }
 }
 
-char *imm_to_str(signed int imm, char *fmt) {
+char *imm_to_str(int imm, char *fmt) {
     const unsigned long len = 40;
     char *buf = calloc(len, sizeof *buf);
     snprintf(buf, len, fmt, imm);

@@ -6,7 +6,6 @@
 unsigned int smart_compile(opcode_t opcode, int operand1, int operand2) {
     switch (opcode) {
         case OPCODE_COUNT:
-        default:
             fprintf(stderr, "%d - (0x%x) is not a valid opcode.\n", opcode, opcode);
 
         case HALT:
@@ -27,6 +26,8 @@ unsigned int smart_compile(opcode_t opcode, int operand1, int operand2) {
         case SLL:
         case SRL:
         case MOV:
+        case LW:
+        case SW:
             return compile_irr(opcode, operand1, operand2);
     /* immediate to register */
     /* oooooo rrrrr mmmmmmmmmmmmmmmmmmmmm */
@@ -39,6 +40,8 @@ unsigned int smart_compile(opcode_t opcode, int operand1, int operand2) {
     /* jmp register */
     /* oooooo rrrrr 000000000000000000000 */
         case JR:
+        case PUSH:
+        case POP:
             return compile_irm(opcode, operand1, NUL);
     /* jmp immediate */
     /* oooooo 00000 mmmmmmmmmmmmmmmmmmmmm  */
@@ -48,7 +51,9 @@ unsigned int smart_compile(opcode_t opcode, int operand1, int operand2) {
         case JZ:
         case JZS:
         case CALL:
+        case PUSHI:
             return compile_irm(opcode, NUL, operand2);
     }
 
 }
+

@@ -26,11 +26,16 @@ void execute(unsigned int ins);
 void dump_registers(void) {
     char *str, *imm_str;
     for (int i = 0; i < REGISTER_COUNT; ++i) {
-        imm_str = imm_to_str(registers[i], "%d");
-        str = str_cat(3, reg_to_str(i), ": ", imm_str);
-        puts(str);
-        free(str);
-        free(imm_str);
+        if (i >= F0 && i <= F3) {
+            printf("%s: %f\n", reg_to_str(i), *((float*)registers + i));
+        }
+        else {
+            imm_str = imm_to_str(registers[i], "%d");
+            str = str_cat(3, reg_to_str(i), ": ", imm_str);
+            puts(str);
+            free(str);
+            free(imm_str);
+        }
     }
 }
 
@@ -115,6 +120,8 @@ void init(void) {
 int main(void) {
     unsigned int *program = calloc(50, sizeof *program);
     int i = 0;
+
+
     /* Simple factorial(12) (Largest signed 32 bit) program. */
     program[i++] = smart_compile(LI, G0, 1);   /* Start */
     program[i++] = smart_compile(LI, G1, 6);   /* End */
@@ -131,7 +138,7 @@ int main(void) {
     char *test_data = "Hello world!!";
     load_data(test_data, strlen(test_data)+1);
 
-    //dump_text_section();
+    dump_text_section();
     //dump_data_section();
     disassemble_program(program, i);
     printf("\n");
@@ -155,7 +162,6 @@ void execute(unsigned int ins) {
 
     switch (op) {
         case OPCODE_COUNT:
-        default:
             fputs("'NOT AN OPCODE'", stderr);
             abort();
         case HALT:
