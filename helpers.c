@@ -17,7 +17,12 @@ char *op_to_str(opcode_t op) {
         case ADD:  return "add";
         case MUL:  return "mul";
         case DIV:  return "div";
-        case CMP:  return "cmp";
+        case EQ:   return "eq";
+        case NE:   return "ne";
+        case LT:   return "lt";
+        case LE:   return "le";
+        case GT:   return "gt";
+        case GE:   return "ge";
         case AND:  return "and";
         case OR:   return "or";
         case XOR:  return "xor";
@@ -139,7 +144,12 @@ void print_dissassembly(unsigned int ins) {
         case ADD:
         case MUL:
         case DIV:
-        case CMP:
+        case EQ:
+        case NE:
+        case LT:
+        case LE:
+        case GT:
+        case GE:
         case AND:
         case OR:
         case XOR:
