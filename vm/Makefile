@@ -4,7 +4,7 @@ OBJ_DIR:= obj
 BIN_DIR:= bin
 LIB_DIR:= lib
 MAINS:= main.o
-TEST_DIR:= test
+TEST_DIR:= tests
 INCLUDES:= -Iinc
 CFLAGS:= -Werror -Wall -pedantic -pedantic-errors -Wextra -g -std=c99 $(INCLUDES)
 LDFLAGS:=
@@ -39,6 +39,7 @@ $(LIB_DIR):
 	mkdir -p $(LIB_DIR)
 
 clean:
-	rm -f $(EXECUTABLE)
 	rm -f $(OBJECTS)
-	rm -f $(LIB_NAME)
+	rm -f $(BIN_DIR)/$(EXECUTABLE)
+	rm -f $(LIB_DIR)/$(LIB_NAME)
+	cd $(TEST_DIR); make clean

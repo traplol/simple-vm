@@ -32,5 +32,7 @@
 bin/
 obj/
 
+*.bin
+
 #YCM
 .ycm_*

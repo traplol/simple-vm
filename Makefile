@@ -1,5 +1,5 @@
 all:
-	cd vm; make
+	cd vm; make; make vm; make tests
 	cd assembler; make
 
 clean:

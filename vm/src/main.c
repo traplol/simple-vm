@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "vm.h"
+#include "binary-file-format.h"
 
 int disasm_flag = 0;
 
@@ -14,7 +16,7 @@ int main(int argc, char **argv) {
     char *filename;
     for (int i = 0; i < argc; ++i) {
         char *arg = argv[i];
-        if (strcmp(arg, "-d") == 0 || strcmp(arg, "--disasseble") == 0) {
+        if (strcmp(arg, "-d") == 0 || strcmp(arg, "--disassemble") == 0) {
             disasm_flag = 1;
         }
         else {
@@ -22,19 +24,23 @@ int main(int argc, char **argv) {
         }
     }
 
-    FILE *fp = fopen(filename, "rb");
-    if (fp == NULL) {
-        fputs("File does not exist\n", stderr);
+    binary_file_t *r = read_binary_file(filename);
+    if (r == NULL) {
+        fprintf(stderr, "File '%s' not found.\n", filename);
         return -1;
     }
 
-    size_t file_size;
-    fseek(fp, 0L, SEEK_END);
-    file_size = ftell(fp);
-    fseek(fp, 0L, SEEK_SET);
+    if (disasm_flag) {
+        disassemble_program(r->text_section, r->text_section_len);
+    }
+    else {
+        init();
+        load_program(r->text_section, r->text_section_len);
+        load_data(r->data_section, r->data_section_len);
+        run();
+        dump_registers();
+    }
 
-    char *data = malloc(file_size * sizeof *data);
-    fread(data, sizeof *data, file_size, fp);
-    fclose(fp);
     return 0;
+
 }

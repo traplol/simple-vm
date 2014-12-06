@@ -10,6 +10,9 @@
 #define HEAP_STACK_SECTION_START (DATA_SECTION_START + DATA_SECTION_SIZE + 1)
 #define HEAP_STACK_SECTION_STOP (MEMSIZE - 1)
 
+/* Prints the disassembly of the program. */
+void disassemble_program(unsigned int *program, size_t length);
+
 /* Dumps the register state to stdout. */
 void dump_registers(void);
 
@@ -20,10 +23,10 @@ void dump_text_section(void);
 void dump_data_section(void);
 
 /* Loads the program into the text section of the vm's memory. */
-void load_program(unsigned int *program, size_t program_size);
+void load_program(unsigned int *program, size_t length);
 
 /* Loads the data into the data section of the vm's memory. */
-void load_data(char *data, size_t data_size);
+void load_data(char *data, size_t length);
 
 /* Resets the state of the vm. */
 void init(void);

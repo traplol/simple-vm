@@ -63,30 +63,30 @@ void dump_data_section(void) {
     printf("\n");
 }
 
-void disassemble_program(unsigned int *program, size_t program_size) {
-    for (size_t i = 0; i < program_size; ++i) {
+void disassemble_program(unsigned int *program, size_t length) {
+    for (size_t i = 0; i < length; ++i) {
         print_dissassembly(program[i]);
     }
 }
 
-void load_program(unsigned int *program, size_t program_size) {
-    if (program_size > TEXT_SECTION_SIZE) {
+void load_program(unsigned int *program, size_t length) {
+    if (length > TEXT_SECTION_SIZE) {
         fputs("Program size too big.\n", stderr);
         exit(1);
     }
-    for (size_t i = 0; i < program_size; ++i) {
+    for (size_t i = 0; i < length; ++i) {
         memspace[TEXT_SECTION_START + i] = program[i];
     }
 }
 
-void load_data(char *data, size_t data_size) {
-    if (data_size > DATA_SECTION_SIZE) {
+void load_data(char *data, size_t length) {
+    if (length> DATA_SECTION_SIZE) {
         fputs("Data size too big.\n", stderr);
         exit(1);
     }
     unsigned int *tmp = &memspace[DATA_SECTION_START];
     char *start = (char*)tmp;
-    char *end = (char*)tmp + data_size;
+    char *end = (char*)tmp + length;
     for (; start != end; ++start, ++data) {
         *start = *data;
     }
@@ -107,35 +107,7 @@ void init(void) {
     registers[PC] = TEXT_SECTION_START;
 }
 
-
-//int main(void) {
-    //unsigned int *prg = calloc(50, sizeof *prg);
-    //int i = 0;
-//
-    ///* factorial(5) */
-    //prg[i++] = assemble_instruction(LI, G0, 1);  /* Start */
-    //prg[i++] = assemble_instruction(LI, G1, 5);  /* End */
-    //prg[i++] = assemble_instruction(LI, G3, 1);  /* Product */
-    //prg[i++] = assemble_instruction(GT, G0, G1);
-    //prg[i++] = assemble_instruction(JZS, 4, 0);  /* If G0 > G1, exit loop */
-    //prg[i++] = assemble_instruction(MUL, G3, G0);/* Mul product and counter */
-    //prg[i++] = assemble_instruction(ADDI, G0, 1);/* Increment counter */
-    //prg[i++] = assemble_instruction(JS, -4, 0);  /* Jump to compare */
-    //prg[i++] = assemble_instruction(HALT, 0, 0); /* Halt */
-//
-    //init();
-    //load_program(prg, i);
-    //disassemble_program(prg, i);
-    //printf("\n");
-    //free(prg);
-//
-    //run();
-    //dump_registers();
-    //return 0;
-//}
-
 void execute(unsigned int ins) {
-    printf("%x\n", ins);
     opcode_t op;
     register_t r1, r2;
     int imm;
