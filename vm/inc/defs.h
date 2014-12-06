@@ -5,7 +5,6 @@
 #define REGISTER_MASK (0x1f)
 #define IMMEDIATE_MASK (0x1fffff)
 #define SIGN_BIT_MASK_32BIT (0x80000000)
-#define SIGN_BIT_MASK_26BIT (0x4000000)  /* NOT USED */
 #define SIGN_BIT_MASK_21BIT (0x100000)
 #define SIGN_BIT_MASK_21BIT_TO_32BIT (0xfff00000)
 
@@ -16,12 +15,13 @@
 
 
 typedef enum opcode {
-    /* Halt, stops program execution. */
+    /* NO_OPERANDS */
+    /* oooooo 00000000000000000000000000 */
+    /*    6              26              */
     HALT = 0,
-    /* Nop, does nothing. */
     NOP,
 
-    /* register to register */
+    /* REGISTER_REGISTER */
     /* oooooo rrrrr rrrrr 0000000000000000 */
     /*    6     5     5         16         */
     ADD,
@@ -42,7 +42,7 @@ typedef enum opcode {
     LW,
     SW,
 
-    /* immediate to register */
+    /* REGISTER_IMMEDIATE */
     /* oooooo rrrrr mmmmmmmmmmmmmmmmmmmmm */
     /*    6     5           21            */
     ADDI,
@@ -50,14 +50,14 @@ typedef enum opcode {
     DIVI,
     LI,
 
-    /* register no immediate, equiv. to irm or irr with second operand as NUL */
+    /* REGISTER_NO_IMMEDIATE */
     /* oooooo rrrrr 000000000000000000000 */
     /*    6     5            21           */
     JR,
     PUSH,
     POP,
 
-    /* immediate no register, equiv to irm with NUL Register. */
+    /* IMMEDIATE_NO_REGISTER */
     /* oooooo 00000 mmmmmmmmmmmmmmmmmmmmm  */
     /*    6                  21            */
     J,

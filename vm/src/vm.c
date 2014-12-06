@@ -9,6 +9,8 @@
 #include "helpers.h"
 #include "smart-compile.h"
 
+#include "instruction.h"
+
 #define MEMSIZE (64000)
 #define TEXT_SECTION_START (200)
 #define TEXT_SECTION_SIZE (2500)
@@ -118,32 +120,26 @@ void init(void) {
 
 
 int main(void) {
-    unsigned int *program = calloc(50, sizeof *program);
+    unsigned int *prg = calloc(50, sizeof *prg);
     int i = 0;
 
+    /* factorial(5) */
+    prg[i++] = compile_instruction(LI, G0, 1);  /* Start */
+    prg[i++] = compile_instruction(LI, G1, 5);  /* End */
+    prg[i++] = compile_instruction(LI, G3, 1);  /* Product */
+    prg[i++] = compile_instruction(GT, G0, G1);
+    prg[i++] = compile_instruction(JZS, 4, 0);  /* If G0 > G1, exit loop */
+    prg[i++] = compile_instruction(MUL, G3, G0);/* Mul product and counter */
+    prg[i++] = compile_instruction(ADDI, G0, 1);/* Increment counter */
+    prg[i++] = compile_instruction(JS, -4, 0);  /* Jump to compare */
+    prg[i++] = compile_instruction(HALT, 0, 0); /* Halt */
 
-    /* Simple factorial(12) (Largest signed 32 bit) program. */
-    program[i++] = smart_compile(LI, G0, 1);   /* Start */
-    program[i++] = smart_compile(LI, G1, 5);   /* End */
-    program[i++] = smart_compile(LI, G3, 1);   /* Product */
-    program[i++] = smart_compile(GT, G0, G1); /* Check if G0 > G1. */
-    program[i++] = smart_compile(JZS, NUL, 4); /* If compare succeeds, exit loop. */
-    program[i++] = smart_compile(MUL, G3, G0); /* Mul the product by counter. */
-    program[i++] = smart_compile(ADDI, G0, 1); /* Increment counter. */
-    program[i++] = smart_compile(JS, NUL, -4); /* Jump to compare */
-    program[i++] = HALT;
     init();
-    load_program(program, i);
-
-    char *test_data = "Hello world!!";
-    load_data(test_data, strlen(test_data)+1);
-
-    //dump_text_section();
-    //dump_data_section();
-    disassemble_program(program, i);
+    load_program(prg, i);
+    disassemble_program(prg, i);
     printf("\n");
+    free(prg);
 
-    free(program);
     run();
     dump_registers();
     return 0;
