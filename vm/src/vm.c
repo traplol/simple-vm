@@ -4,22 +4,15 @@
 #include <string.h>
 #include <stddef.h>
 
+#include "vm.h"
 #include "helpers.h"
 #include "instruction.h"
 
-#define MEMSIZE (64000)
-#define TEXT_SECTION_START (200)
-#define TEXT_SECTION_SIZE (2500)
-#define DATA_SECTION_START (TEXT_SECTION_START + TEXT_SECTION_SIZE + 1)
-#define DATA_SECTION_SIZE (8000)
-#define HEAP_STACK_SECTION_START (DATA_SECTION_START + DATA_SECTION_SIZE + 1)
-#define HEAP_STACK_SECTION_STOP (MEMSIZE - 1)
 
 register_t registers[REGISTER_COUNT];
 unsigned int memspace[MEMSIZE];
 int program_halted = 0;
 
-void execute(unsigned int ins);
 
 void dump_registers(void) {
     char *str, *imm_str;
@@ -115,33 +108,34 @@ void init(void) {
 }
 
 
-int main(void) {
-    unsigned int *prg = calloc(50, sizeof *prg);
-    int i = 0;
-
-    /* factorial(5) */
-    prg[i++] = assemble_instruction(LI, G0, 1);  /* Start */
-    prg[i++] = assemble_instruction(LI, G1, 5);  /* End */
-    prg[i++] = assemble_instruction(LI, G3, 1);  /* Product */
-    prg[i++] = assemble_instruction(GT, G0, G1);
-    prg[i++] = assemble_instruction(JZS, 4, 0);  /* If G0 > G1, exit loop */
-    prg[i++] = assemble_instruction(MUL, G3, G0);/* Mul product and counter */
-    prg[i++] = assemble_instruction(ADDI, G0, 1);/* Increment counter */
-    prg[i++] = assemble_instruction(JS, -4, 0);  /* Jump to compare */
-    prg[i++] = assemble_instruction(HALT, 0, 0); /* Halt */
-
-    init();
-    load_program(prg, i);
-    disassemble_program(prg, i);
-    printf("\n");
-    free(prg);
-
-    run();
-    dump_registers();
-    return 0;
-}
+//int main(void) {
+    //unsigned int *prg = calloc(50, sizeof *prg);
+    //int i = 0;
+//
+    ///* factorial(5) */
+    //prg[i++] = assemble_instruction(LI, G0, 1);  /* Start */
+    //prg[i++] = assemble_instruction(LI, G1, 5);  /* End */
+    //prg[i++] = assemble_instruction(LI, G3, 1);  /* Product */
+    //prg[i++] = assemble_instruction(GT, G0, G1);
+    //prg[i++] = assemble_instruction(JZS, 4, 0);  /* If G0 > G1, exit loop */
+    //prg[i++] = assemble_instruction(MUL, G3, G0);/* Mul product and counter */
+    //prg[i++] = assemble_instruction(ADDI, G0, 1);/* Increment counter */
+    //prg[i++] = assemble_instruction(JS, -4, 0);  /* Jump to compare */
+    //prg[i++] = assemble_instruction(HALT, 0, 0); /* Halt */
+//
+    //init();
+    //load_program(prg, i);
+    //disassemble_program(prg, i);
+    //printf("\n");
+    //free(prg);
+//
+    //run();
+    //dump_registers();
+    //return 0;
+//}
 
 void execute(unsigned int ins) {
+    printf("%x\n", ins);
     opcode_t op;
     register_t r1, r2;
     int imm;

@@ -97,7 +97,7 @@ void assert(int cond, char *msg) {
     }
 }
 
-/* Returbs a new string with all of the strings passes concatenated. */
+/* Returns a new string with all of the strings passes concatenated. */
 char *str_cat(unsigned long count, ...) {
     size_t lengths[count];
     size_t total_length = 0;

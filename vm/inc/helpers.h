@@ -1,6 +1,6 @@
 #ifndef SIMPLE_VM_HELPERS_H
 #define SIMPLE_VM_HELPERS_H
-#include "defs.h"
+#include "opdefs.h"
 
 /* Returns the opcode as a readable string. */
 char *op_to_str(opcode_t op);

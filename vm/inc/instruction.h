@@ -1,7 +1,7 @@
 #ifndef SIMPLE_VM_VM_INC_INSTRUCTION_H
 #define SIMPLE_VM_VM_INC_INSTRUCTION_H
 
-#include "defs.h"
+#include "opdefs.h"
 
 typedef enum {
     INVALID_INSTRUCTION_TYPE = 0,

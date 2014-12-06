@@ -1,18 +1,6 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "smart-compile.h"
-
-typedef struct instruction {
-    opcode_t opcode;
-    register_t r1;
-    union {
-        register_t r2;
-        int imm;
-    } operand2 ;
-    unsigned int compiled;
-    char *raw;
-} instruction_t;
 
 char *to_lower(char *str) {
     char *ret = calloc(strlen(str)+1, sizeof *ret);
@@ -24,14 +12,6 @@ char *to_lower(char *str) {
         ret[i] = c;
     }
     return ret;
-}
-
-
-instruction_t compile(char *str_ins) {
-    instruction_t ins;
-
-    strcpy(ins.raw, str_ins);
-    return ins;
 }
 
 int main(void) {
