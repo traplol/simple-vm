@@ -42,21 +42,28 @@ typedef struct instruction {
         int imm;
     } operand2;
 
-    unsigned int compiled_value;
+    unsigned int assembled_value;
 
     char *opcode_str, *operand1_str, *operand2_str;
     char *disassembled_str;
 } instruction_t;
 
 /* Makes a new instruction with all of the components to print,
- * and the compiled value of the instruction. */
+ * and the assembled value of the instruction. */
 instruction_t *make_instruction(opcode_t opcode, int operand1, int operand2);
+instruction_t *make_no_operand_instruction(opcode_t opcode);
+instruction_t *make_one_operand_instruction(opcode_t opcode, int operand1);
+instruction_t *make_two_operand_instruction(opcode_t opcode, int operand1, int operand2);
 
-/* Frees the instruction and sets it equal to null. */
+/* Disassembles an assembled instruction */
+instruction_t *disassemble_instruction(unsigned int instruction);
+
+/* Frees the instruction and sets it to null. */
 void free_instruction(instruction_t **instruction);
 
 /* Compiles an instruction to it's binary representation. */
-unsigned int compile_instruction(opcode_t opcode, int operand1, int operand2);
+unsigned int assemble_instruction(opcode_t opcode, int operand1, int operand2);
+
 
 /* Returns the bit type for the given opcode. */
 instruction_type_t get_type(opcode_t opcode);

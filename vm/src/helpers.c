@@ -3,8 +3,7 @@
 #include <string.h> /* strlen, memcpy */
 
 #include "helpers.h"
-#include "irm.h"
-#include "irr.h"
+#include "instruction.h"
 
 char *op_to_str(opcode_t op) {
     switch (op) {
@@ -122,64 +121,8 @@ char *str_cat(unsigned long count, ...) {
 }
 
 void print_dissassembly(unsigned int ins) {
-    opcode_t op;
-    register_t r1, r2;
-    int imm;
-
-    op = get_opcode(ins);
-    r1 = get_r1(ins);
-    r2 = get_r2(ins);
-    imm = get_imm(ins);
-
-    irr_t *irr = make_irr(op, r1, r2);
-    irm_t *irm = make_irm(op, r1, imm);
-
-    switch(op) {
-        case OPCODE_COUNT:
-        case HALT:
-        case NOP:
-            puts(irr->compiled_str);
-            break;
-
-        case ADD:
-        case MUL:
-        case DIV:
-        case EQ:
-        case NE:
-        case LT:
-        case LE:
-        case GT:
-        case GE:
-        case AND:
-        case OR:
-        case XOR:
-        case SLL:
-        case SRL:
-        case MOV:
-        case LW:
-        case SW:
-            puts(irr->compiled_str);
-            break;
-
-        case ADDI:
-        case MULI:
-        case DIVI:
-        case LI:
-
-        case JR:
-        case PUSH:
-        case POP:
-
-        case J:
-        case JS:
-        case JZ:
-        case JZS:
-        case CALL:
-        case PUSHI:
-            puts(irm->compiled_str);
-            break;
-    }
-    free_irr(&irr);
-    free_irm(&irm);
+    instruction_t *instruction = disassemble_instruction(ins);
+    puts(instruction->disassembled_str);
+    free_instruction(&instruction);
 }
 

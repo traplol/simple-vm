@@ -4,11 +4,7 @@
 #include <string.h>
 #include <stddef.h>
 
-#include "irr.h"
-#include "irm.h"
 #include "helpers.h"
-#include "smart-compile.h"
-
 #include "instruction.h"
 
 #define MEMSIZE (64000)
@@ -124,15 +120,15 @@ int main(void) {
     int i = 0;
 
     /* factorial(5) */
-    prg[i++] = compile_instruction(LI, G0, 1);  /* Start */
-    prg[i++] = compile_instruction(LI, G1, 5);  /* End */
-    prg[i++] = compile_instruction(LI, G3, 1);  /* Product */
-    prg[i++] = compile_instruction(GT, G0, G1);
-    prg[i++] = compile_instruction(JZS, 4, 0);  /* If G0 > G1, exit loop */
-    prg[i++] = compile_instruction(MUL, G3, G0);/* Mul product and counter */
-    prg[i++] = compile_instruction(ADDI, G0, 1);/* Increment counter */
-    prg[i++] = compile_instruction(JS, -4, 0);  /* Jump to compare */
-    prg[i++] = compile_instruction(HALT, 0, 0); /* Halt */
+    prg[i++] = assemble_instruction(LI, G0, 1);  /* Start */
+    prg[i++] = assemble_instruction(LI, G1, 5);  /* End */
+    prg[i++] = assemble_instruction(LI, G3, 1);  /* Product */
+    prg[i++] = assemble_instruction(GT, G0, G1);
+    prg[i++] = assemble_instruction(JZS, 4, 0);  /* If G0 > G1, exit loop */
+    prg[i++] = assemble_instruction(MUL, G3, G0);/* Mul product and counter */
+    prg[i++] = assemble_instruction(ADDI, G0, 1);/* Increment counter */
+    prg[i++] = assemble_instruction(JS, -4, 0);  /* Jump to compare */
+    prg[i++] = assemble_instruction(HALT, 0, 0); /* Halt */
 
     init();
     load_program(prg, i);
