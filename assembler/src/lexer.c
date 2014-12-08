@@ -6,7 +6,6 @@
 #include "lexer.h"
 #include "helpers.h"
 
-
 token_list_t *tokenize(char *code) {
     int tk_line_num = 0, tk_internal = 0;
     char *tk_str = NULL;
@@ -68,3 +67,4 @@ token_list_t *tokenize(char *code) {
     free(freeable_copy);
     return tk_list;
 }
+
