@@ -7,6 +7,7 @@
 #include "binary-file-format.h"
 #include "helpers.h"
 #include "lexer.h"
+#include "parser.h"
 
 int usage(void) {
     fputs("usage: assembler ifile [-o ofile]\n", stderr);
@@ -17,6 +18,7 @@ int error(char *str) {
     fputs(str, stderr);
     return usage();
 }
+
 int main(int argc, char **argv) {
     char *ifile, *ofile, *arg, *file_contents;
     int i;
@@ -64,11 +66,13 @@ int main(int argc, char **argv) {
     fclose(fp);
 
     token_list_t *tk_list = tokenize(file_contents);
-    token_t *cur = tk_list->head;
+    token_list_t *pass_two = parse(tk_list);
+    token_t *cur = pass_two->head;
     while (cur) {
         puts(cur->str);
         cur = cur->next;
     }
+    free_token_list(&pass_two);
     free_token_list(&tk_list);
     free(file_contents);
     return 0;
