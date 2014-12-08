@@ -15,6 +15,7 @@
 
 
 typedef enum opcode {
+    NOT_AN_OPCODE = -1,
     /* NO_OPERANDS */
     /* oooooo 00000000000000000000000000 */
     /*    6              26              */
@@ -73,6 +74,7 @@ typedef enum opcode {
 
 
 typedef enum registers {
+    NOT_A_REGISTER = -1,
     NUL = 0,                                    /* 1 */
     /* General purpose 32-bit registers. */
     G0, G1, G2, G3, G4, G5, G6, G7,             /* 8 */

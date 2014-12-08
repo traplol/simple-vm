@@ -192,6 +192,7 @@ instruction_t *disassemble_instruction(unsigned int instruction) {
 instruction_type_t get_type(opcode_t opcode) {
     switch(opcode) {
         case OPCODE_COUNT:
+        case NOT_AN_OPCODE:
             return INVALID_INSTRUCTION_TYPE;
 
         case HALT:

@@ -1,9 +1,17 @@
 all:
-	cd vm; make; make vm; make tests
-	cd assembler; make
+	@echo "Making vm..."
+	@cd vm; make; make vm; make tests
+	@echo "Done"
+	@echo "Making assembler..."
+	@cd assembler; make
+	@echo "Done"
 
 clean:
-	cd vm; make clean
-	cd assembler; make clean
+	@echo "Cleaning vm..."
+	@cd vm; make clean
+	@echo "Done"
+	@echo "Making assembler..."
+	@cd assembler; make clean
+	@echo "Done"
 
 

@@ -120,6 +120,7 @@ void execute(unsigned int ins) {
 
     switch (op) {
         case OPCODE_COUNT:
+        case NOT_AN_OPCODE:
             fputs("'NOT AN OPCODE'", stderr);
             abort();
         case HALT:

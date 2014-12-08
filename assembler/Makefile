@@ -3,21 +3,24 @@ SRC_DIR:= src
 OBJ_DIR:= obj
 BIN_DIR:= bin
 INCLUDES:= -Iinc -I../vm/inc
-CFLAGS:= -Werror -Wall -pedantic -pedantic-errors -Wextra -g -std=c99 $(INCLUDES)
+CFLAGS:= -O0 -Werror -Wall -pedantic -pedantic-errors -Wextra -g -std=c99 $(INCLUDES)
 LDFLAGS:=
 SOURCES:= $(wildcard $(SRC_DIR)/*.c)
 OBJECTS:= $(addprefix $(OBJ_DIR)/,$(notdir $(SOURCES:.c=.o)))
 EXECUTABLE:= $(BIN_DIR)/assembler
 
-.PHONY: includes all clean
+.PHONY: all clean test
 
-all: $(EXECUTABLE)
+all: $(EXECUTABLE) test
+
+test:
+	./bin/assembler test.asm -o test.bin
 
 $(INC_DIRS): 
 	CFLAGS += -I $@
 
 $(EXECUTABLE): $(OBJECTS) | $(BIN_DIR)
-	$(CC) $(LDFLAGS) -o $@ $^
+	$(CC) $(LDFLAGS) -o $@ $^ -L ../vm/lib -lsimplevm
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR) 
 	$(CC) $(CFLAGS) -c -o $@ $<

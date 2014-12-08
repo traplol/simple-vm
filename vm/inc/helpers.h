@@ -10,19 +10,38 @@ char *reg_to_str(register_t r);
  * Note: This needs to be freed. */
 char *imm_to_str(int imm, char *fmt);
 
+/* Takes a string and returns the appropriate opcode. */
+opcode_t str_to_op(char *str);
+/* Takes a string and returns the appropriate register. */
+register_t str_to_reg(char *str);
+
 
 /* Returns a new string with all of the strings passes concatenated. 
  * Note: This needs to be freed. */
 char *str_cat(unsigned long count, ...);
 
+/* Prints a message to stderr if condition is false. */
 void assert(int cond, char *msg);
 
+/* Returns a copy of str. */
+char *strdup(char *str);
+
+/* Returns of a zero terminated copy of str - str+num */
+char *substr(char *str, int num);
+
+/* Returns a lowercase copy of str. */
+char *to_lower(char *str);
+
+/* Counts the occurences of c in str. */
+int count_char(char *str, char c);
+
+/* Prints an instruction in disassembled format. */
 void print_dissassembly(unsigned int ins);
 
+/* Returns if a character is visibly printable. */
 static inline int is_printable(char c) {
     return c > 0x1f && c < 0x7f;
 }
-
 static inline int get_opcode(unsigned int ins) {
     return (ins & (OPCODE_MASK << OPCODE_SHIFT)) >> OPCODE_SHIFT;
 }
