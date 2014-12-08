@@ -80,7 +80,7 @@ void load_program(unsigned int *program, size_t length) {
 }
 
 void load_data(char *data, size_t length) {
-    if (length> DATA_SECTION_SIZE) {
+    if (length * sizeof *memspace> DATA_SECTION_SIZE) {
         fputs("Data size too big.\n", stderr);
         exit(1);
     }
