@@ -101,8 +101,12 @@ void run(void) {
 }
 
 void init(void) {
-    for (size_t i = 0; i < MEMSIZE; ++i) {
+    size_t i;
+    for (i = 0; i < MEMSIZE; ++i) {
         memspace[i] = 0;
+    }
+    for (i = 0; i < REGISTER_COUNT; ++i) {
+        registers[i] = 0;
     }
     registers[PC] = TEXT_SECTION_START;
 }
