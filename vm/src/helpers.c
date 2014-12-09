@@ -46,6 +46,11 @@ char *substr(char *str, int num) {
     return s ? memcpy(s, str, num) : NULL;
 }
 
+/* Returns whether an opcude uses a PC relative offset. */
+int is_pc_relative(opcode_t op) {
+    return op == JZS || op == JS;
+}
+
 /* Returns a new string with all of the strings passes concatenated. */
 char *str_cat(unsigned long count, ...) {
     size_t lengths[count];
@@ -73,6 +78,21 @@ void print_dissassembly(unsigned int ins) {
     instruction_t *instruction = disassemble_instruction(ins);
     puts(instruction->disassembled_str);
     free_instruction(&instruction);
+}
+
+int get_num_operands(opcode_t op) {
+    switch (get_type(op)) {
+        case INSTRUCTION_TYPE_COUNT:
+        case INVALID_INSTRUCTION_TYPE: return -1;
+
+        case NO_OPERANDS: return 0;
+
+        case REGISTER_REGISTER:
+        case REGISTER_IMMEDIATE: return 2;
+
+        case REGISTER_NO_IMMEDIATE:
+        case IMMEDIATE_NO_REGISTER: return 1;
+    }
 }
 
 char *op_to_str(opcode_t op) {
@@ -229,10 +249,10 @@ register_t str_to_reg(char *str) {
     else if (strcmp(str, "r0") == 0) { reg = R0; }
     else if (strcmp(str, "r1") == 0) { reg = R1; }
 
-    else if (strcmp(str, "Z") == 0) { reg = Z; }
-    else if (strcmp(str, "SP") == 0) { reg = SP; }
-    else if (strcmp(str, "FP") == 0) { reg = FP; }
-    else if (strcmp(str, "PC") == 0) { reg = PC; }
+    else if (strcmp(str, "z") == 0) { reg = Z; }
+    else if (strcmp(str, "sp") == 0) { reg = SP; }
+    else if (strcmp(str, "fp") == 0) { reg = FP; }
+    else if (strcmp(str, "pc") == 0) { reg = PC; }
     free(str);
     return reg;
 }

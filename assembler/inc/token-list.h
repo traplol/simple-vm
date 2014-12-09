@@ -45,6 +45,7 @@ typedef struct token {
 
 typedef struct token_list {
     token_t *head, *tail;
+    size_t length;
 } token_list_t;
 
 token_list_t *make_token_list(void);

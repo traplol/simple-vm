@@ -5,6 +5,63 @@
 #include "token-list.h"
 #include "parser.h"
 
+int expression(char **expr);
+
+int number(char **expr) {
+    int result = *((*expr)++) - '0';
+    while (*(*expr) >= '0' && *(*expr) <= '9') {
+        result = 10 * result + *((*expr)++) - '0';
+    }
+    return result;
+}
+
+int factor(char **expr) {
+    if (*(*expr) >= '0' && *(*expr) <= '9') {
+        return number(expr);
+    }
+    else if (*(*expr) == '(') {
+        (*expr)++; /* '(' */
+        int result = expression(expr);
+        (*expr)++; /* ')' */
+        return result;
+    }
+    else if (*((*expr)) == '-') {
+        (*expr)++; /* '-' */
+        return -expression(expr);
+    }
+    return 0;
+}
+
+int term(char **expr) {
+    int result = factor(expr);
+    while (*(*expr) == '*' || *(*expr) == '/') {
+        if (*((*expr)++) == '*') {
+            result *= factor(expr);
+        }
+        else {
+            result /= factor(expr);
+        }
+    }
+    return result;
+}
+
+int expression(char **expr) {
+    int result = term(expr);
+    while (*((*expr)) == '+' || *(*expr) == '-') {
+        if (*((*expr)++) == '+') {
+            result += term(expr);
+        }
+        else {
+            result -= term(expr);
+        }
+    }
+    return result;
+}
+
+int eval(char *expr) {
+    return expression(&expr);
+}
+
 void parse_arithmetic_expr(token_list_t *list, token_t **tok) {
     /* Parse arithmetic expression. */
     char *catted_str = NULL, *tmp;
@@ -47,7 +104,10 @@ void parse_arithmetic_expr(token_list_t *list, token_t **tok) {
         free(tmp);
         start = start->next;
     }
-    push_back_token(list, catted_str, st_line_num, TK_IMMEDIATE, 0);
+    int evaled = eval(catted_str);
+    char buf[30];
+    sprintf(buf, "%d", evaled);
+    push_back_token(list, buf, st_line_num, TK_IMMEDIATE, evaled);
     *tok = end->prev;
     free(catted_str);
 }
@@ -59,12 +119,10 @@ void parse_ident(token_list_t *list, token_t **tok) {
     if (op != NOT_AN_OPCODE) {
         push_back_token(list, tk->str, tk->line_num, TK_INSTR, op);
     }
-    else if (tk->next) {
-        /* New label */
-        if (tk->next->type == TK_COLON) {
-            push_back_token(list, tk->str, tk->line_num, TK_NEW_LABEL, 0);
-            *tok = tk->next;
-        }
+    /* New label */
+    else if (tk->next && tk->next->type == TK_COLON) {
+        push_back_token(list, tk->str, tk->line_num, TK_NEW_LABEL, 0);
+        *tok = tk->next;
     }
     /* Label reference. */
     else {
@@ -106,9 +164,13 @@ token_list_t *parse(token_list_t *list) {
 
     while (tok) {
         switch (tok->type) {
+            default:
             case TK_UNKNOWN:
                 fprintf(stderr, "Unknown token at line %d\n", tok->line_num);
+                fprintf(stderr, "~~~~>%s\n", tok->str);
+                free_token_list(&tk_list);
                 return NULL;
+            case TK_COMMA: break;
             case TK_IDENT: parse_ident(tk_list, &tok); break;
             case TK_LPAREN: parse_arithmetic_expr(tk_list, &tok); break;
             case TK_DOLLAR: parse_register(tk_list, &tok); break;

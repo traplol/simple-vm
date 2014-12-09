@@ -15,6 +15,11 @@ opcode_t str_to_op(char *str);
 /* Takes a string and returns the appropriate register. */
 register_t str_to_reg(char *str);
 
+/* Returns the number of operands for an opcode, or -1 if it's not an opcode */
+int get_num_operands(opcode_t op);
+
+/* Returns whether an opcude uses a PC relative offset. */
+int is_pc_relative(opcode_t op);
 
 /* Returns a new string with all of the strings passes concatenated. 
  * Note: This needs to be freed. */

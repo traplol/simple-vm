@@ -8,6 +8,7 @@ token_list_t *make_token_list(void) {
     token_list_t *list = malloc(sizeof *list);
     list->head = NULL;
     list->tail = NULL;
+    list->length = 0;
     return list;
 }
 void free_token_list(token_list_t **list) {
@@ -44,6 +45,7 @@ void free_token(token_t **token) {
 
 token_t *push_back_token(token_list_t *list, char *str, int line_num, token_type_t type, int internal) {
     token_t *t = make_token(str, line_num, type, internal);
+    list->length++;
     if (list->head == NULL) {
         list->head = t;
         list->tail = t;

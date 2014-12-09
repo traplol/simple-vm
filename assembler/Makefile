@@ -14,7 +14,7 @@ EXECUTABLE:= $(BIN_DIR)/assembler
 all: $(EXECUTABLE) test
 
 test:
-	./bin/assembler test.asm -o test.bin
+	./bin/assembler test2.asm -o test.bin
 
 $(INC_DIRS): 
 	CFLAGS += -I $@
