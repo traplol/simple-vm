@@ -3,9 +3,9 @@
 
 typedef struct binary_file {
     unsigned long data_section_len;
-    char *data_section;
+    unsigned char *data_section;
     unsigned long text_section_len;
-    unsigned int *text_section;
+    unsigned char *text_section;
 } binary_file_t;
 
 typedef enum {

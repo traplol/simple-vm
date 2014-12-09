@@ -5,12 +5,16 @@
 #include "vm.h"
 #include "binary-file-format.h"
 
-int disasm_flag = 0;
+int disasm_flag = 0, dump_data_flag = 0, dump_text_flag = 0;
+
 
 int main(int argc, char **argv) {
     --argc; ++argv;
+    char *usage_str =
+        "usage: \n"
+        "\tvm [-d|--disassemble] [-D|--dump-data] [-T|--dump-text] file\n";
     if (!argc) {
-        fputs("usage: vm [-d|--disassemble] file\n", stderr);
+        fputs(usage_str, stderr);
         return -1;
     }
     char *filename;
@@ -18,6 +22,12 @@ int main(int argc, char **argv) {
         char *arg = argv[i];
         if (strcmp(arg, "-d") == 0 || strcmp(arg, "--disassemble") == 0) {
             disasm_flag = 1;
+        }
+        else if (strcmp(arg, "-D") == 0 || strcmp(arg, "--dump-data") == 0) {
+            dump_data_flag = 1;
+        }
+        else if (strcmp(arg, "-T") == 0 || strcmp(arg, "--dump-text") == 0) {
+            dump_text_flag = 1;
         }
         else {
             filename = arg;
@@ -30,17 +40,20 @@ int main(int argc, char **argv) {
         return -1;
     }
 
+    init();
+    load_program(r->text_section, r->text_section_len);
+    load_data(r->data_section, r->data_section_len);
+    if (dump_data_flag) {
+        dump_data_section();
+    }
+    if (dump_text_flag) {
+        dump_text_section();
+    }
     if (disasm_flag) {
         disassemble_program(r->text_section, r->text_section_len);
     }
-    else {
-        init();
-        load_program(r->text_section, r->text_section_len);
-        load_data(r->data_section, r->data_section_len);
-        run();
-        dump_registers();
-    }
-
+    run();
+    dump_registers();
     return 0;
 
 }

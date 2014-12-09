@@ -1,6 +1,7 @@
 #ifndef SIMPLE_VM_VM_INC_INSTRUCTION_H
 #define SIMPLE_VM_VM_INC_INSTRUCTION_H
 
+#include <stdint.h>
 #include "opdefs.h"
 
 typedef enum {
@@ -34,15 +35,15 @@ typedef struct instruction {
     opcode_t opcode;
     union {
         register_t reg;
-        int imm;
+        int32_t imm;
     } operand1;
 
     union {
         register_t reg;
-        int imm;
+        int32_t imm;
     } operand2;
 
-    unsigned int assembled_value;
+    int32_t assembled_value;
 
     char *opcode_str, *operand1_str, *operand2_str;
     char *disassembled_str;
@@ -50,19 +51,19 @@ typedef struct instruction {
 
 /* Makes a new instruction with all of the components to print,
  * and the assembled value of the instruction. */
-instruction_t *make_instruction(opcode_t opcode, int operand1, int operand2);
+instruction_t *make_instruction(opcode_t opcode, int32_t operand1, int32_t operand2);
 instruction_t *make_no_operand_instruction(opcode_t opcode);
-instruction_t *make_one_operand_instruction(opcode_t opcode, int operand1);
-instruction_t *make_two_operand_instruction(opcode_t opcode, int operand1, int operand2);
+instruction_t *make_one_operand_instruction(opcode_t opcode, int32_t operand1);
+instruction_t *make_two_operand_instruction(opcode_t opcode, int32_t operand1, int32_t operand2);
 
 /* Disassembles an assembled instruction */
-instruction_t *disassemble_instruction(unsigned int instruction);
+instruction_t *disassemble_instruction(int32_t instruction);
 
 /* Frees the instruction and sets it to null. */
 void free_instruction(instruction_t **instruction);
 
 /* Compiles an instruction to it's binary representation. */
-unsigned int assemble_instruction(opcode_t opcode, int operand1, int operand2);
+int32_t assemble_instruction(opcode_t opcode, int32_t operand1, int32_t operand2);
 
 
 /* Returns the bit type for the given opcode. */

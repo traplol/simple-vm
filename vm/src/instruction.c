@@ -68,16 +68,16 @@ void do_operands(instruction_t *ins) {
 instruction_t *make_no_operand_instruction(opcode_t opcode) {
     return make_instruction(opcode, 0, 0);
 }
-instruction_t *make_one_operand_instruction(opcode_t opcode, int operand1) {
+instruction_t *make_one_operand_instruction(opcode_t opcode, int32_t operand1) {
     return make_instruction(opcode, operand1, 0);
 }
-instruction_t *make_two_operand_instruction(opcode_t opcode, int operand1, int operand2) {
+instruction_t *make_two_operand_instruction(opcode_t opcode, int32_t operand1, int32_t operand2) {
     return make_instruction(opcode, operand1, operand2);
 }
 
 /* Makes a new instruction with all of the components to print,
  * and the assembled value of the instruction. */
-instruction_t *make_instruction(opcode_t opcode, int operand1, int operand2) {
+instruction_t *make_instruction(opcode_t opcode, int32_t operand1, int32_t operand2) {
     instruction_t *ins = malloc(sizeof *ins);
     ins->type = get_type(opcode);
     ins->opcode = opcode;
@@ -104,19 +104,19 @@ void free_instruction(instruction_t **instruction) {
     }
 }
 
-unsigned int assemble_no_operands(opcode_t opcode) {
+int32_t assemble_no_operands(opcode_t opcode) {
     return opcode << OPCODE_SHIFT;
 }
-unsigned int assemble_register_register(opcode_t op, register_t r1, register_t r2 ) {
-    unsigned int ins = 0;
+int32_t assemble_register_register(opcode_t op, register_t r1, register_t r2 ) {
+    int32_t ins = 0;
     ins |= (op << OPCODE_SHIFT);
     ins |= (r1 << R1_SHIFT);
     ins |= (r2 << R2_SHIFT);
     return ins;
 }
-unsigned int assemble_register_immediate(opcode_t op, register_t r, int imm) {
-    unsigned int ins = 0;
-    int sign_bit = (imm & SIGN_BIT_MASK_32BIT) >> SIGN_BIT_SHIFT_21BIT;
+int32_t assemble_register_immediate(opcode_t op, register_t r, int32_t imm) {
+    int32_t ins = 0;
+    int32_t sign_bit = (imm & SIGN_BIT_MASK_32BIT) >> SIGN_BIT_SHIFT_21BIT;
     imm &= IMMEDIATE_MASK;
     imm |= sign_bit;
 
@@ -125,15 +125,15 @@ unsigned int assemble_register_immediate(opcode_t op, register_t r, int imm) {
     ins |= imm;
     return ins;
 }
-unsigned int assemble_register_no_immediate(opcode_t op, register_t r) {
-    unsigned int ins = 0;
+int32_t assemble_register_no_immediate(opcode_t op, register_t r) {
+    int32_t ins = 0;
     ins |= (op << OPCODE_SHIFT);
     ins |= (r << R1_SHIFT);
     return ins;
 }
-unsigned int assemble_immediate_no_register(opcode_t op, int imm) {
-    unsigned int ins = 0;
-    int sign_bit = (imm & SIGN_BIT_MASK_32BIT) >> SIGN_BIT_SHIFT_21BIT;
+int32_t assemble_immediate_no_register(opcode_t op, int32_t imm) {
+    int32_t ins = 0;
+    int32_t sign_bit = (imm & SIGN_BIT_MASK_32BIT) >> SIGN_BIT_SHIFT_21BIT;
     imm &= IMMEDIATE_MASK;
     imm |= sign_bit;
 
@@ -144,7 +144,7 @@ unsigned int assemble_immediate_no_register(opcode_t op, int imm) {
 }
 
 /* Compiles an instruction to it's binary representation. */
-unsigned int assemble_instruction(opcode_t opcode, int operand1, int operand2) {
+int32_t assemble_instruction(opcode_t opcode, int32_t operand1, int32_t operand2) {
     instruction_type_t ty = get_type(opcode);
 
     switch(ty) {
@@ -165,7 +165,7 @@ unsigned int assemble_instruction(opcode_t opcode, int operand1, int operand2) {
 }
 
 
-instruction_t *disassemble_instruction(unsigned int instruction) {
+instruction_t *disassemble_instruction(int32_t instruction) {
     opcode_t op = get_opcode(instruction);
     register_t r1 = get_r1(instruction);
     register_t r2 = get_r2(instruction);
@@ -197,6 +197,7 @@ instruction_type_t get_type(opcode_t opcode) {
 
         case HALT:
         case NOP:
+        case RET:
             return NO_OPERANDS;
 
         case ADD:

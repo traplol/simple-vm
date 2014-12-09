@@ -21,6 +21,7 @@ typedef enum opcode {
     /*    6              26              */
     HALT = 0,
     NOP,
+    RET,
 
     /* REGISTER_REGISTER */
     /* oooooo rrrrr rrrrr 0000000000000000 */

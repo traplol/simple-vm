@@ -74,7 +74,7 @@ char *str_cat(unsigned long count, ...) {
     return ret;
 }
 
-void print_dissassembly(unsigned int ins) {
+void print_dissassembly(int32_t ins) {
     instruction_t *instruction = disassemble_instruction(ins);
     puts(instruction->disassembled_str);
     free_instruction(&instruction);
@@ -103,6 +103,7 @@ char *op_to_str(opcode_t op) {
 
         case HALT: return "halt";
         case NOP:  return "nop";
+        case RET:  return "ret";
 
         case ADD:  return "add";
         case MUL:  return "mul";
@@ -175,7 +176,7 @@ char *reg_to_str(register_t r) {
     }
 }
 
-char *imm_to_str(int imm, char *fmt) {
+char *imm_to_str(int32_t imm, char *fmt) {
     const unsigned long len = 40;
     char *buf = calloc(len, sizeof *buf);
     snprintf(buf, len, fmt, imm);
@@ -187,6 +188,7 @@ opcode_t str_to_op(char *str) {
     str = tolower(str);
     if (strcmp(str, "halt") == 0) { op = HALT; }
     else if (strcmp(str, "nop") == 0) { op = NOP; }
+    else if (strcmp(str, "ret") == 0) { op = RET; }
 
     else if (strcmp(str, "add") == 0) { op = ADD; }
     else if (strcmp(str, "mul") == 0) { op = MUL; }

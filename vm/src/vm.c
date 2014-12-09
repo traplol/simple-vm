@@ -10,13 +10,13 @@
 
 
 register_t registers[REGISTER_COUNT];
-unsigned int memspace[MEMSIZE];
-int program_halted = 0;
+unsigned char memspace[MEMSIZE];
+int32_t program_halted = 0;
 
 
 void dump_registers(void) {
     char *str, *imm_str;
-    for (int i = 0; i < REGISTER_COUNT; ++i) {
+    for (int32_t i = 0; i < REGISTER_COUNT; ++i) {
         if (i >= F0 && i <= F3) {
             printf("%s: %f\n", reg_to_str(i), *((float*)registers + i));
         }
@@ -31,23 +31,26 @@ void dump_registers(void) {
 }
 
 void dump_text_section(void) {
-    int col = 0;
-    for (size_t i = 0; i < TEXT_SECTION_SIZE; ++i, ++col) {
+    int32_t col = 0;
+    int32_t *start, *end;
+    start = (int32_t*)(memspace+TEXT_SECTION_START);
+    end = (int32_t*)(memspace+TEXT_SECTION_START + TEXT_SECTION_SIZE);
+    for (col = 0; start != end; ++start, ++col) {
         if (col == 11) {
             printf("\n");
             col = 0;
         }
-        printf(" 0x%08x ", memspace[TEXT_SECTION_START + i]);
+        printf(" %08x ", *start);
     }
     printf("\n");
 }
 
 void dump_data_section(void) {
-    int col = 0;
-    unsigned int *tmp = &memspace[DATA_SECTION_START];
-    unsigned int *end = &memspace[DATA_SECTION_START + DATA_SECTION_SIZE];
-    char data, *start = (char*)tmp;
-    for (; (unsigned int*)start != end; ++start, ++col) {
+    int32_t col = 0;
+    unsigned char *tmp = &memspace[DATA_SECTION_START];
+    unsigned char *end = &memspace[DATA_SECTION_START + DATA_SECTION_SIZE];
+    unsigned char data, *start = tmp;
+    for (; start != end; ++start, ++col) {
         data = *start;
         if (col == 19) {
             printf("\n");
@@ -63,58 +66,50 @@ void dump_data_section(void) {
     printf("\n");
 }
 
-void disassemble_program(unsigned int *program, size_t length) {
-    for (size_t i = 0; i < length; ++i) {
-        print_dissassembly(program[i]);
+void disassemble_program(unsigned char *program, size_t size) {
+    for (size_t i = 0; i < size / sizeof (int32_t); ++i) {
+        print_dissassembly(((int32_t*)program)[i]);
     }
 }
 
-void load_program(unsigned int *program, size_t length) {
-    if (length > TEXT_SECTION_SIZE) {
+void load_program(unsigned char *program, size_t size) {
+    if (size > TEXT_SECTION_SIZE) {
         fputs("Program size too big.\n", stderr);
         exit(1);
     }
-    for (size_t i = 0; i < length; ++i) {
-        memspace[TEXT_SECTION_START + i] = program[i];
-    }
+    memcpy(memspace+TEXT_SECTION_START, program, size);
 }
 
-void load_data(char *data, size_t length) {
-    if (length * sizeof *memspace> DATA_SECTION_SIZE) {
+void load_data(unsigned char *data, size_t size) {
+    if (size > DATA_SECTION_SIZE) {
         fputs("Data size too big.\n", stderr);
         exit(1);
     }
-    unsigned int *tmp = &memspace[DATA_SECTION_START];
-    char *start = (char*)tmp;
-    char *end = (char*)tmp + length;
-    for (; start != end; ++start, ++data) {
-        *start = *data;
-    }
+    memcpy(memspace+DATA_SECTION_START, data, size);
 }
 
 void run(void) {
-    size_t pc;
+    size_t pc, ins;
+    printf("%d", *(memspace+registers[PC]));
     while (program_halted == 0) {
         pc = registers[PC];
-        execute(memspace[pc]);
+        ins = *((size_t*)(memspace+pc));
+        execute(ins);
     }
 }
 
 void init(void) {
-    size_t i;
-    for (i = 0; i < MEMSIZE; ++i) {
-        memspace[i] = 0;
-    }
-    for (i = 0; i < REGISTER_COUNT; ++i) {
-        registers[i] = 0;
-    }
+    memset(memspace, 0, MEMSIZE);
+    memset(registers, 0, REGISTER_COUNT * sizeof (register_t));
     registers[PC] = TEXT_SECTION_START;
+    registers[SP] = STACK_START;
+    registers[FP] = STACK_START;
 }
 
-void execute(unsigned int ins) {
+void execute(int32_t ins) {
     opcode_t op;
     register_t r1, r2;
-    int imm;
+    int32_t imm;
 
     op = get_opcode(ins);
     r1 = get_r1(ins);
@@ -131,107 +126,110 @@ void execute(unsigned int ins) {
             program_halted = 1;
             break;
         case NOP:
-            registers[PC]++;
+            registers[PC] += 4;
+            break;
+        case RET:
+            registers[PC] = ((int32_t*)memspace)[registers[SP]];
             break;
 
         case ADD:
             registers[r1] += registers[r2];
-            registers[PC]++;
+            registers[PC] += 4;
             break;
         case MUL:
             registers[r1] *= registers[r2];
-            registers[PC]++;
+            registers[PC] += 4;
             break;
         case DIV:
             registers[r1] /= registers[r2];
-            registers[PC]++;
+            registers[PC] += 4;
             break;
         case EQ:
             registers[Z] = registers[r1] == registers[r2];
-            registers[PC]++;
+            registers[PC] += 4;
             break;
         case NE:
             registers[Z] = registers[r1] != registers[r2];
-            registers[PC]++;
+            registers[PC] += 4;
             break;
         case LT:
             registers[Z] = registers[r1] < registers[r2];
-            registers[PC]++;
+            registers[PC] += 4;
             break;
         case LE:
             registers[Z] = registers[r1] <= registers[r2];
-            registers[PC]++;
+            registers[PC] += 4;
             break;
         case GT:
             registers[Z] = registers[r1] > registers[r2];
-            registers[PC]++;
+            registers[PC] += 4;
             break;
         case GE:
             registers[Z] = registers[r1] >= registers[r2];
-            registers[PC]++;
+            registers[PC] += 4;
             break;
         case AND:
             registers[r1] &= registers[r2];
-            registers[PC]++;
+            registers[PC] += 4;
             break;
         case OR:
             registers[r1] |= registers[r2];
-            registers[PC]++;
+            registers[PC] += 4;
             break;
         case XOR:
             registers[r1] ^= registers[r2];
-            registers[PC]++;
+            registers[PC] += 4;
             break;
         case SLL:
             registers[r1] <<= registers[r2];
-            registers[PC]++;
+            registers[PC] += 4;
             break;
         case SRL:
             registers[r1] >>= registers[r2];
-            registers[PC]++;
+            registers[PC] += 4;
             break;
         case MOV:
             registers[r1] = registers[r2];
-            registers[PC]++;
+            registers[PC] += 4;
             break;
         case LW:
-            registers[r1] = memspace[registers[r2]];
-            registers[PC]++;
+            registers[r1] = ((int32_t*)memspace)[registers[r2]];
+            registers[PC] += 4;
             break;
         case SW:
-            memspace[registers[r2]] = registers[r1];
-            registers[PC]++;
+            ((int32_t*)memspace)[registers[r2]] = registers[r1];
+            registers[PC] += 4;
             break;
 
         case ADDI:
             registers[r1] += imm;
-            registers[PC]++;
+            registers[PC] += 4;
             break;
         case MULI:
             registers[r1] *= imm;
-            registers[PC]++;
+            registers[PC] += 4;
             break;
         case DIVI:
             registers[r1] /= imm;
-            registers[PC]++;
+            registers[PC] += 4;
             break;
         case LI:
             registers[r1] = imm;
-            registers[PC]++;
+            registers[PC] += 4;
             break;
 
         case JR:
             registers[PC] = registers[r1];
             break;
         case PUSH:
-            memspace[registers[SP]] = registers[r1];
-            registers[SP]--;
-            registers[PC]++;
+            ((int32_t*)memspace)[registers[SP]] = registers[r1];
+            registers[SP] -= 4;
+            registers[PC] += 4;
             break;
         case POP:
-            registers[r1] = memspace[registers[SP]];
-            registers[SP]++;
-            registers[PC]++;
+            registers[r1] = ((int32_t*)memspace)[registers[SP]];
+            registers[SP] += 4;
+            registers[PC] += 4;
             break;
 
         case J:
@@ -246,7 +244,7 @@ void execute(unsigned int ins) {
                 registers[Z] = 0;
             }
             else {
-                registers[PC]++;
+                registers[PC] += 4;
             }
             break;
         case JZS:
@@ -255,21 +253,20 @@ void execute(unsigned int ins) {
                 registers[Z] = 0;
             }
             else {
-                registers[PC]++;
+                registers[PC] += 4;
             }
             break;
         case CALL:
             /* Push return address to stack */
-            memspace[registers[SP]] = registers[PC] + 1;
+            ((int32_t*)memspace)[registers[SP]] = registers[PC] + 1;
             /* Save stack pointer to return address in frame pointer. */
-            registers[FP] = registers[SP];
-            registers[SP]--;
+            registers[SP] -= 4;
             registers[PC] = imm;
             break;
         case PUSHI:
-            memspace[registers[SP]] = imm;
-            registers[SP]--;
-            registers[PC]++;
+            ((int32_t*)memspace)[registers[SP]] = imm;
+            registers[SP] -= 4;
+            registers[PC] += 4;
             break;
 
     }

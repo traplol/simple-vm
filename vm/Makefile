@@ -18,7 +18,7 @@ EXECUTABLE:= vm
 all: $(LIB_NAME)
 
 tests:
-	cd $(TEST_DIR); make
+	cd $(TEST_DIR); make; ./binwriter factorial.bin
 
 $(LIB_NAME): $(filter-out $(OBJ_DIR)/$(MAINS),$(OBJECTS)) | $(LIB_DIR)
 	@echo "Building lib:'$(LIB_DIR)/$(LIB_NAME)'"
