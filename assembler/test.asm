@@ -1,13 +1,16 @@
-li $g0, (1)       # start
-li $g1, (5)       # end
-li $g2, (1)       # product
+
+li $g0, (1)
+li $g1, (1)
+li $g2, (5)
 
 loop:
-eq $g0, $g1
-jzs exit          # if g0 > g1, exit loop
-mul $g2, $g1      # g2 = g2 * g1
-addi $g1, (-1)    # g1 = g1 + 1
-j loop           # continue loop
+eq $g2, $g1
+jzs exit
+mul $g0, $g2
+addi $g2, (-1)
+js loop
 
 exit:
-halt              # done.
+halt
+
+

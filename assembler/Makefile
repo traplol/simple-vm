@@ -9,12 +9,21 @@ SOURCES:= $(wildcard $(SRC_DIR)/*.c)
 OBJECTS:= $(addprefix $(OBJ_DIR)/,$(notdir $(SOURCES:.c=.o)))
 EXECUTABLE:= $(BIN_DIR)/assembler
 
-.PHONY: all clean test
+TESTASM:= test.asm
 
-all: $(EXECUTABLE) test
+.PHONY: all clean asm disasm exec
 
-test:
-	./bin/assembler test2.asm -o test.bin
+all: $(EXECUTABLE) asm
+
+asm: $(EXECUTABLE)
+	./bin/assembler $(TESTASM) -o $(TESTASM:.asm=.bin)
+
+disasm:
+	../vm/bin/vm -d $(TESTASM:.asm=.bin)
+
+exec: asm
+	../vm/bin/vm $(TESTASM:.asm=.bin)
+
 
 $(INC_DIRS): 
 	CFLAGS += -I $@

@@ -19,11 +19,11 @@ typedef struct symbol {
 typedef struct program_info {
     size_t data_len;
     size_t data_idx;
-    char *data;
+    unsigned char *data;
 
     size_t text_len;
     size_t text_idx;
-    unsigned int *text;
+    unsigned char *text;
 
     section_t current_section;
 

@@ -162,19 +162,13 @@ void insert_text_or_data(program_info_t *prog_info, void *thing, size_t thing_si
     }
     else if (prog_info->current_section == TEXT) {
         /* Resize the text section. */
-        if (prog_info->text_idx + (thing_size / sizeof *(prog_info->text)) > prog_info->text_len ) {
+        if (prog_info->text_idx  >= prog_info->text_len ) {
             prog_info->text_len *= 2;
             prog_info->text = realloc(prog_info->text, prog_info->text_len * sizeof *(prog_info->text));
         }
         memcpy(&prog_info->text[prog_info->text_idx], thing, thing_size);
         /* thing_size is a multiple of the size of each instruction */
-        if (thing_size % sizeof *(prog_info->text) == 0) {
-            prog_info->text_idx += thing_size / sizeof *(prog_info->text);
-        }
-        else {
-            /* Need to byte align. */
-            prog_info->text_idx += 1 + (thing_size / sizeof *(prog_info->text));
-        }
+        prog_info->text_idx += thing_size;
     }
 }
 
@@ -277,7 +271,7 @@ void generate_symbols(program_info_t *prog_info, token_list_t *tlist) {
                     break;
             }
             if (prog_info->current_section == TEXT) {
-                prog_info->text_idx++;
+                prog_info->text_idx += 4;
             }
         }
         else if (prog_info->current_section == DATA) {
