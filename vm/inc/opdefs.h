@@ -3,15 +3,19 @@
 
 #define OPCODE_MASK (0x3f)
 #define REGISTER_MASK (0x1f)
-#define IMMEDIATE_MASK (0x1fffff)
+#define IMMEDIATE_MASK_21BIT (0x1fffff)
+#define IMMEDIATE_MASK_16BIT (0xffff)
 #define SIGN_BIT_MASK_32BIT (0x80000000)
 #define SIGN_BIT_MASK_21BIT (0x100000)
 #define SIGN_BIT_MASK_21BIT_TO_32BIT (0xfff00000)
+#define SIGN_BIT_MASK_16BIT (0x8000)
+#define SIGN_BIT_MASK_16BIT_TO_32BIT (0xffff8000)
 
 #define R1_SHIFT (5 + 16)
 #define R2_SHIFT (16)
 #define OPCODE_SHIFT (5 + 5 + 16)
 #define SIGN_BIT_SHIFT_21BIT (11)
+#define SIGN_BIT_SHIFT_16BIT (16)
 
 
 typedef enum opcode {
@@ -41,6 +45,9 @@ typedef enum opcode {
     SLL,
     SRL,
     MOV,
+    /* REGISTER_REGISTER_OFFSET */
+    /* oooooo rrrrr rrrrr mmmmmmmmmmmmmmmm */
+    /*    6     5     5         16         */
     LW,
     SW,
 

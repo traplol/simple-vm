@@ -87,11 +87,13 @@ int get_num_operands(opcode_t op) {
 
         case NO_OPERANDS: return 0;
 
+        case REGISTER_NO_IMMEDIATE:
+        case IMMEDIATE_NO_REGISTER: return 1;
+
         case REGISTER_REGISTER:
         case REGISTER_IMMEDIATE: return 2;
 
-        case REGISTER_NO_IMMEDIATE:
-        case IMMEDIATE_NO_REGISTER: return 1;
+        case REGISTER_REGISTER_OFFSET: return 3;
     }
 }
 
@@ -196,6 +198,7 @@ opcode_t str_to_op(char *str) {
     else if (strcmp(str, "eq") == 0) { op = EQ; }
     else if (strcmp(str, "ne") == 0) { op = NE; }
     else if (strcmp(str, "lt") == 0) { op = LT; }
+    else if (strcmp(str, "le") == 0) { op = LE; }
     else if (strcmp(str, "gt") == 0) { op = GT; }
     else if (strcmp(str, "ge") == 0) { op = GE; }
     else if (strcmp(str, "and") == 0) { op = AND; }

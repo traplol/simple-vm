@@ -108,7 +108,7 @@ symbol_t *insert_symbol(program_info_t *prog_info, token_t *token) {
     }
     /* These two for loops allow for a single full loop over 
      * the hashtable starting at the generated hash index. */
-    for (size_t i = index; i < prog_info->data_len; ++i) {
+    for (size_t i = index; i < len ; ++i) {
         if (prog_info->sym_table[i] == NULL) {
             prog_info->sym_table[i] = symbol;
             return symbol;
@@ -191,11 +191,11 @@ int compile_instruction(program_info_t *prog_info, token_t **token) {
     int num_operands = get_num_operands(tk->internal.op);
     instruction_t *instr;
     opcode_t op = tk->internal.op;
-    int operand1, operand2, passfail = 0;
+    int operand1, operand2, operand3, passfail = 0;
     switch (num_operands) {
         case 0:
             tk = tk->next;
-            instr = make_instruction(op, 0, 0);
+            instr = make_no_operand_instruction(op);
             break;
         case 1:
             tk = tk->next;
@@ -205,7 +205,7 @@ int compile_instruction(program_info_t *prog_info, token_t **token) {
             else {
                 operand1 = tk->internal.imm;
             }
-            instr = make_instruction(op, operand1, 0);
+            instr = make_one_operand_instruction(op, operand1);
             tk = tk->next;
             break;
         case 2:
@@ -218,7 +218,17 @@ int compile_instruction(program_info_t *prog_info, token_t **token) {
             else {
                 operand2 = tk->internal.imm;
             }
-            instr = make_instruction(op, operand1, operand2);
+            instr = make_two_operand_instruction(op, operand1, operand2);
+            tk = tk->next;
+            break;
+        case 3:
+            tk = tk->next;
+            operand1 = tk->internal.imm;
+            tk = tk->next;
+            operand2 = tk->internal.imm;
+            tk = tk->next;
+            operand3 = tk->internal.imm;
+            instr = make_three_operand_instruction(op, operand1, operand2, operand3);
             tk = tk->next;
             break;
     }
@@ -268,6 +278,9 @@ void generate_symbols(program_info_t *prog_info, token_list_t *tlist) {
                     break;
                 case 2:
                     cur = cur->next->next;
+                    break;
+                case 3:
+                    cur = cur->next->next->next;
                     break;
             }
             if (prog_info->current_section == TEXT) {

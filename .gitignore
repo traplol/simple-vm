@@ -33,6 +33,7 @@ bin/
 obj/
 
 *.bin
+.exrc
 
 #YCM
 .ycm_*

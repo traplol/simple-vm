@@ -13,12 +13,9 @@ OBJECTS:= $(addprefix $(OBJ_DIR)/,$(notdir $(SOURCES:.c=.o)))
 LIB_NAME:= libsimplevm.a
 EXECUTABLE:= vm
 
-.PHONY: all clean tests
+.PHONY: all clean
 
-all: $(LIB_NAME)
-
-tests:
-	cd $(TEST_DIR); make; ./binwriter factorial.bin
+all: $(LIB_NAME) $(EXECUTABLE)
 
 $(LIB_NAME): $(filter-out $(OBJ_DIR)/$(MAINS),$(OBJECTS)) | $(LIB_DIR)
 	@echo "Building lib:'$(LIB_DIR)/$(LIB_NAME)'"
@@ -49,5 +46,4 @@ clean:
 	rm -f $(OBJECTS)
 	rm -f $(BIN_DIR)/$(EXECUTABLE)
 	rm -f $(LIB_DIR)/$(LIB_NAME)
-	cd $(TEST_DIR); make clean
 	@echo "Done"

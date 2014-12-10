@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include "opdefs.h"
 
+#define INSTRUCTION_SIZE (sizeof(int32_t))
+
 typedef enum {
     INVALID_INSTRUCTION_TYPE = 0,
     /* oooooo 00000000000000000000000000 */
@@ -13,6 +15,10 @@ typedef enum {
     /* oooooo rrrrr rrrrr 0000000000000000 */
     /*    6     5     5         16         */
     REGISTER_REGISTER,
+
+    /* oooooo rrrrr rrrrr mmmmmmmmmmmmmmmm */
+    /*    6     5     5         16         */
+    REGISTER_REGISTER_OFFSET,
 
     /* oooooo rrrrr mmmmmmmmmmmmmmmmmmmmm */
     /*    6     5           21            */
@@ -43,18 +49,24 @@ typedef struct instruction {
         int32_t imm;
     } operand2;
 
+    union {
+        register_t reg;
+        int32_t imm;
+    } operand3;
+
     int32_t assembled_value;
 
-    char *opcode_str, *operand1_str, *operand2_str;
+    char *opcode_str, *operand1_str, *operand2_str, *operand3_str;
     char *disassembled_str;
 } instruction_t;
 
 /* Makes a new instruction with all of the components to print,
  * and the assembled value of the instruction. */
-instruction_t *make_instruction(opcode_t opcode, int32_t operand1, int32_t operand2);
+instruction_t *make_instruction(opcode_t opcode, int32_t operand1, int32_t operand2, int32_t operand3);
 instruction_t *make_no_operand_instruction(opcode_t opcode);
 instruction_t *make_one_operand_instruction(opcode_t opcode, int32_t operand1);
 instruction_t *make_two_operand_instruction(opcode_t opcode, int32_t operand1, int32_t operand2);
+instruction_t *make_three_operand_instruction(opcode_t opcode, int32_t operand1, int32_t operand2, int32_t operand3);
 
 /* Disassembles an assembled instruction */
 instruction_t *disassemble_instruction(int32_t instruction);
@@ -63,7 +75,7 @@ instruction_t *disassemble_instruction(int32_t instruction);
 void free_instruction(instruction_t **instruction);
 
 /* Compiles an instruction to it's binary representation. */
-int32_t assemble_instruction(opcode_t opcode, int32_t operand1, int32_t operand2);
+int32_t assemble_instruction(opcode_t opcode, int32_t operand1, int32_t operand2, int32_t operand3);
 
 
 /* Returns the bit type for the given opcode. */

@@ -49,20 +49,27 @@ static inline int32_t is_printable(char c) {
     return c > 0x1f && c < 0x7f;
 }
 static inline int32_t get_opcode(int32_t ins) {
-    return (ins & (OPCODE_MASK << OPCODE_SHIFT)) >> OPCODE_SHIFT;
+    return (ins >> OPCODE_SHIFT) & OPCODE_MASK;
 }
 static inline int32_t get_r1(int32_t ins) {
-    return (ins & (REGISTER_MASK << R1_SHIFT)) >> R1_SHIFT;
+    return (ins >> R1_SHIFT) & REGISTER_MASK;
 }
 static inline int32_t get_r2(int32_t ins) {
-    return (ins & (REGISTER_MASK << R2_SHIFT)) >> R2_SHIFT;
+    return (ins >> R2_SHIFT) & REGISTER_MASK;
 }
-static inline int32_t get_imm(int32_t ins) {
+static inline int32_t get_imm21(int32_t ins) {
     int32_t sign_bit = ins & SIGN_BIT_MASK_21BIT;
     if (sign_bit) {
         sign_bit |= SIGN_BIT_MASK_21BIT_TO_32BIT;
     }
-    return (ins & IMMEDIATE_MASK) | sign_bit;
+    return (ins & IMMEDIATE_MASK_21BIT) | sign_bit;
+}
+static inline int32_t get_imm16(int32_t ins) {
+    int32_t sign_bit = ins & SIGN_BIT_MASK_16BIT;
+    if (sign_bit) {
+        sign_bit |= SIGN_BIT_MASK_16BIT_TO_32BIT;
+    }
+    return (ins & IMMEDIATE_MASK_16BIT) | sign_bit;
 }
 
 #endif
