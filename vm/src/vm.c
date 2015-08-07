@@ -88,23 +88,36 @@ void load_data(unsigned char *data, size_t size) {
     memcpy(memspace+DATA_SECTION_START, data, size);
 }
 
-void pprint(char *oper, int32_t num) {
-    printf("%s=%d", oper, num);
+void pprint_stack_helper(int32_t addr, int32_t offs, int32_t value) {
+    printf(" - <stack@0x%x:%+d=0x%x>", addr, offs, value);
+    if (offs == 0) {
+        printf(" <~~ $sp");
+    }
+    printf("\n");
+}
+void pprint_stack(int32_t num) {
     int32_t *stack_addr;
     int32_t offs;
+    stack_addr = ((int32_t*)(memspace + num));
+    printf("\n");
+    for (int i = 5; i > 0; --i) {
+        offs = i * sizeof(int32_t);
+        if (num+offs < MEMSIZE) {
+            pprint_stack_helper(num+offs, offs, *(stack_addr+i));
+        }
+    }
+    offs = 0 * sizeof(int32_t);
+    pprint_stack_helper(num+offs, offs, *(stack_addr+0));
+    for (int i = -1; i >= -5; --i) {
+        offs = i * sizeof(int32_t);
+        pprint_stack_helper(num+offs, offs, *(stack_addr+i));
+    }
+}
+
+void pprint(char *oper, int32_t num) {
+    printf("%s=0x%x", oper, num);
     if (50000 < num && num < MEMSIZE) {
-        stack_addr = ((int32_t*)(memspace + num));
-        printf("\n");
-        for (int i = 5; i > 0; --i) {
-            offs = i * sizeof(int32_t);
-            if (num+offs < MEMSIZE) {
-                printf(" - <stack@%d.$sp:+%d=%d>\n", num+offs, offs, *(stack_addr+i));
-            }
-        }
-        for (int i = 0; i >= -5; --i) {
-            offs = i * sizeof(int32_t);
-            printf(" - <stack@%d.$sp:%d=%d>\n", num+offs, offs, *(stack_addr+i));
-        }
+        pprint_stack(num);
     }
     printf("\n");
 }
