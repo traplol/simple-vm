@@ -1,14 +1,20 @@
-all: | bindir
+all: bin vm assembler
+
+.PHONY: vm assembler clean
+
+vm:
 	@echo "Making vm..."
 	@cd vm && make && cp bin/vm ../bin/
 	@echo "Copying vm to bin/"
 	@echo "Done"
+
+assembler:
 	@echo "Making assembler..."
 	@cd assembler && make && cp bin/assembler ../bin/
 	@echo "Copying assembler to bin/"
 	@echo "Done"
 
-clean: | bindir
+clean: bin
 	@echo "Cleaning vm..."
 	@cd vm && make clean
 	@echo "Done"
@@ -19,5 +25,5 @@ clean: | bindir
 	cd bin/; rm -f vm; rm -f assembler; rm -f *.bin
 	@echo "Done"
 
-bindir:
+bin:
 	@mkdir -p bin

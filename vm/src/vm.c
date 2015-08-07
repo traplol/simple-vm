@@ -137,11 +137,12 @@ void debug_disasm(int32_t ins) {
 void run(void) {
     size_t pc; 
     int32_t ins;
-    printf("%d\n", *((int32_t*)(memspace+registers[PC])));
     while (program_halted == 0) {
         pc = registers[PC];
         ins = *((int32_t*)(memspace+pc));
+#ifdef DEBUG_DISASSEM
         debug_disasm(ins);
+#endif
         execute(ins);
     }
 }

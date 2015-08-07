@@ -53,7 +53,9 @@ int main(int argc, char **argv) {
         disassemble_program(r->text_section, r->text_section_len);
     }
     run();
+#ifdef DEBUG_DISASSEM
     dump_registers();
+#endif
     return 0;
 
 }
