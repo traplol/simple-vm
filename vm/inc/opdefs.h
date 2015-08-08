@@ -65,6 +65,8 @@ typedef enum opcode {
     JR,
     PUSH,
     POP,
+    PRINTS,
+    PRINTI,
 
     /* IMMEDIATE_NO_REGISTER */
     /* oooooo 00000 mmmmmmmmmmmmmmmmmmmmm  */
@@ -75,6 +77,7 @@ typedef enum opcode {
     JZS,
     CALL,
     PUSHI,
+    PRINTC,
 
     /* The number of opcodes. */
     OPCODE_COUNT

@@ -261,6 +261,8 @@ instruction_type_t get_type(opcode_t opcode) {
         case JR:
         case PUSH:
         case POP:
+        case PRINTS:
+        case PRINTI:
             return REGISTER_NO_IMMEDIATE;
 
         case J:
@@ -269,6 +271,7 @@ instruction_type_t get_type(opcode_t opcode) {
         case JZS:
         case CALL:
         case PUSHI:
+        case PRINTC:
             return IMMEDIATE_NO_REGISTER;
     }
 

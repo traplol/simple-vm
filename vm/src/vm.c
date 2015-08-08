@@ -295,6 +295,14 @@ void execute(int32_t ins) {
             registers[r1] = *((int32_t*)(memspace + registers[SP]));
             registers[PC] += 4;
             break;
+        case PRINTS:
+            printf("%s", ((char*)(memspace + registers[r1])));
+            registers[PC] += 4;
+            break;
+        case PRINTI:
+            printf("%d", *((int32_t*)(memspace + registers[r1])));
+            registers[PC] += 4;
+            break;
 
         case J:
             registers[PC] = imm21;
@@ -331,7 +339,10 @@ void execute(int32_t ins) {
             registers[SP] -= 4;
             registers[PC] += 4;
             break;
-
+        case PRINTC:
+            printf("%c", imm21);
+            registers[PC] += 4;
+            break;
     }
 }
 

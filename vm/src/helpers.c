@@ -133,6 +133,8 @@ char *op_to_str(opcode_t op) {
         case JR:   return "jr";
         case PUSH: return "push";
         case POP:  return "pop";
+        case PRINTS: return "prints";
+        case PRINTI: return "printi";
 
         case J:    return "j";
         case JS:   return "js";
@@ -140,6 +142,7 @@ char *op_to_str(opcode_t op) {
         case JZS:  return "jzs";
         case CALL: return "call";
         case PUSHI:return "pushi";
+        case PRINTC: return "printc";
     }
 }
 
