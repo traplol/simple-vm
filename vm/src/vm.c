@@ -300,7 +300,7 @@ void execute(int32_t ins) {
             registers[PC] += 4;
             break;
         case PRINTI:
-            printf("%d", *((int32_t*)(memspace + registers[r1])));
+            printf("%d", registers[r1]);
             registers[PC] += 4;
             break;
 

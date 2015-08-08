@@ -221,6 +221,8 @@ opcode_t str_to_op(char *str) {
     else if (strcmp(str, "jr") == 0) { op = JR; }
     else if (strcmp(str, "push") == 0) { op = PUSH; }
     else if (strcmp(str, "pop") == 0) { op = POP; }
+    else if (strcmp(str, "prints") == 0) { op = PRINTS; }
+    else if (strcmp(str, "printi") == 0) { op = PRINTI; }
 
     else if (strcmp(str, "j") == 0) { op = J; }
     else if (strcmp(str, "js") == 0) { op = JS; }
@@ -228,6 +230,7 @@ opcode_t str_to_op(char *str) {
     else if (strcmp(str, "jzs") == 0) { op = JZS; }
     else if (strcmp(str, "call") == 0) { op = CALL; }
     else if (strcmp(str, "pushi") == 0) { op = PUSHI; }
+    else if (strcmp(str, "printc") == 0) { op = PRINTC; }
     free(str);
     return op;
 }
