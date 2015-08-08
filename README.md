@@ -76,6 +76,7 @@ These types of instructions take a single operand in the form of an immediate va
 in the 21 lowest bits.
 
 *Note: Bits 22-26, inclusive, are ignored.*
+
 *Note: The sign bit of the 21-bit immediate is preserved*
 
 
