@@ -16,5 +16,5 @@ fact_return:
     ret
 
 exit:
-    printi $r0
+    printi $r0              # print the result
     halt
