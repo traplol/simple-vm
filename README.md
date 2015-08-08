@@ -22,7 +22,7 @@ oooooo 00000000000000000000000000
 ```
 These types of instructions take no operands.
 
-Note: The 26 lowest bits are ignored.
+*Note: The 26 lowest bits are ignored.*
 
 ### Register to register
 ```
@@ -33,7 +33,7 @@ These types of instructions take two operands in the form of register identifier
 will have the value of the second register applied to the value of the first register
 with the result stored in the first register.
 
-Note: The 16 lowest bits are ignored.
+*Note: The 16 lowest bits are ignored.*
 
 ### Register to register with an offset
 ```
@@ -61,7 +61,7 @@ oooooo rrrrr 000000000000000000000
 ```
 These types of instructions take a single operand in the form of a register identifier.
 
-Note: The 21 lowest bits are ignored.
+*Note: The 21 lowest bits are ignored.*
 
 ### Immediate with no register:
 ```
@@ -71,6 +71,6 @@ oooooo 00000 mmmmmmmmmmmmmmmmmmmmm
 These types of instructions take a single operand in the form of an immediate value stored
 in the 21 lowest bits.
 
-Note: Bits 22-26, inclusive, are ignored.
+*Note: Bits 22-26, inclusive, are ignored.*
 
 
