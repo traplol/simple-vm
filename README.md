@@ -45,6 +45,8 @@ and an immediate 16-bit value. The value of the second register and the immediat
 be added together and then the result applied to the first register storing the result
 in the first register.
 
+*Note: The sign bit of the 16-bit immediate is preserved*
+
 ### Immediate to register
 ```
 oooooo rrrrr mmmmmmmmmmmmmmmmmmmmm
@@ -53,6 +55,8 @@ oooooo rrrrr mmmmmmmmmmmmmmmmmmmmm
 These types of instructions take two operands in the form of one register identifer and
 one immediate 21-bit value. The immediate value should be applied to the value of the
 register and the result stored in the register.
+
+*Note: The sign bit of the 21-bit immediate is preserved*
 
 ### Single register with no immediate:
 ```
@@ -72,5 +76,6 @@ These types of instructions take a single operand in the form of an immediate va
 in the 21 lowest bits.
 
 *Note: Bits 22-26, inclusive, are ignored.*
+*Note: The sign bit of the 21-bit immediate is preserved*
 
 
