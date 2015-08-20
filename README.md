@@ -6,6 +6,16 @@ simple-vm is a 32-bit register based virtual machine. It shares similarities to 
 architecture because it has a total of 23 registers and all of the instructions are a 
 fixed width of 32 bits.
 
+usage
+=====
+```
+$ make
+$ cd bin
+$ ./assembler ../examples/recursive.asm -o recursive.bin
+$ ./vm recursive.bin
+120
+```
+
 # Instruction layout
 ```
 Bit Key:
