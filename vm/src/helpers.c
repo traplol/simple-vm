@@ -52,7 +52,7 @@ int is_pc_relative(opcode_t op) {
 }
 
 /* Returns a new string with all of the strings passes concatenated. */
-char *str_cat(unsigned long count, ...) {
+char *str_cat(size_t count, ...) {
     size_t lengths[count];
     size_t total_length = 0;
     char *strings[count];
@@ -182,7 +182,7 @@ char *reg_to_str(register_t r) {
 }
 
 char *imm_to_str(int32_t imm, char *fmt) {
-    const unsigned long len = 40;
+    const i32 len = 40;
     char *buf = calloc(len, sizeof *buf);
     snprintf(buf, len, fmt, imm);
     return buf;

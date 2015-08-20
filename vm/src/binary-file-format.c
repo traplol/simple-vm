@@ -7,10 +7,10 @@
 /* Writes the binary file to a file. */
 int write_binary_file(char *filename, binary_file_t *binary_file) {
     FILE *fp = fopen(filename, "wb");
-    unsigned long ds_len = binary_file->data_section_len;
-    unsigned long ts_len = binary_file->text_section_len;
-    unsigned char *ds = binary_file->data_section;
-    unsigned char *ts = binary_file->text_section;
+    ui32 ds_len = binary_file->data_section_len;
+    ui32 ts_len = binary_file->text_section_len;
+    ui8 *ds = binary_file->data_section;
+    ui8 *ts = binary_file->text_section;
     /* Data section length */
     fwrite(&ds_len, sizeof ds_len, 1, fp);
     /* Text section length */
@@ -34,9 +34,9 @@ binary_file_t *read_binary_file(char *filename) {
     file_size = ftell(fp);
     fseek(fp, 0L, SEEK_SET);
 
-    unsigned long ds_len = 0, ts_len = 0;
-    unsigned char *ds;
-    unsigned char *ts;
+    ui32 ds_len = 0, ts_len = 0;
+    ui8 *ds;
+    ui8 *ts;
 
     fread(&ds_len, sizeof ds_len, 1, fp);
     fread(&ts_len, sizeof ts_len, 1, fp);

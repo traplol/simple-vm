@@ -37,3 +37,14 @@ obj/
 
 #YCM
 .ycm_*
+
+# emacs
+*~
+\#*\#
+/.emacs.dekstop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+

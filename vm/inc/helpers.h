@@ -1,7 +1,7 @@
 #ifndef SIMPLE_VM_HELPERS_H
 #define SIMPLE_VM_HELPERS_H
-#include <stdint.h>
 #include "opdefs.h"
+#include "typedefs.h"
 
 /* Returns the opcode as a readable string. */
 char *op_to_str(opcode_t op);
@@ -9,7 +9,7 @@ char *op_to_str(opcode_t op);
 char *reg_to_str(register_t r);
 /* Returns the immediate as a readable string.
  * Note: This needs to be freed. */
-char *imm_to_str(int32_t imm, char *fmt);
+char *imm_to_str(i32 imm, char *fmt);
 
 /* Takes a string and returns the appropriate opcode. */
 opcode_t str_to_op(char *str);
@@ -17,14 +17,14 @@ opcode_t str_to_op(char *str);
 register_t str_to_reg(char *str);
 
 /* Returns the number of operands for an opcode, or -1 if it's not an opcode */
-int32_t get_num_operands(opcode_t op);
+i32 get_num_operands(opcode_t op);
 
 /* Returns whether an opcude uses a PC relative offset. */
-int32_t is_pc_relative(opcode_t op);
+i32 is_pc_relative(opcode_t op);
 
 /* Returns a new string with all of the strings passes concatenated. 
  * Note: This needs to be freed. */
-char *str_cat(unsigned long count, ...);
+char *str_cat(size_t count, ...);
 
 /* Prints a message to stderr if condition is false. */
 void assert(int cond, char *msg);
@@ -45,27 +45,27 @@ int count_char(char *str, char c);
 void print_dissassembly(int32_t ins);
 
 /* Returns if a character is visibly printable. */
-static inline int32_t is_printable(char c) {
+static inline i32 is_printable(i8 c) {
     return c > 0x1f && c < 0x7f;
 }
-static inline int32_t get_opcode(int32_t ins) {
+static inline i32 get_opcode(i32 ins) {
     return (ins >> OPCODE_SHIFT) & OPCODE_MASK;
 }
-static inline int32_t get_r1(int32_t ins) {
+static inline i32 get_r1(i32 ins) {
     return (ins >> R1_SHIFT) & REGISTER_MASK;
 }
-static inline int32_t get_r2(int32_t ins) {
+static inline i32 get_r2(i32 ins) {
     return (ins >> R2_SHIFT) & REGISTER_MASK;
 }
-static inline int32_t get_imm21(int32_t ins) {
-    int32_t sign_bit = ins & SIGN_BIT_MASK_21BIT;
+static inline i32 get_imm21(i32 ins) {
+    i32 sign_bit = ins & SIGN_BIT_MASK_21BIT;
     if (sign_bit) {
         sign_bit |= SIGN_BIT_MASK_21BIT_TO_32BIT;
     }
     return (ins & IMMEDIATE_MASK_21BIT) | sign_bit;
 }
-static inline int32_t get_imm16(int32_t ins) {
-    int32_t sign_bit = ins & SIGN_BIT_MASK_16BIT;
+static inline i32 get_imm16(i32 ins) {
+    i32 sign_bit = ins & SIGN_BIT_MASK_16BIT;
     if (sign_bit) {
         sign_bit |= SIGN_BIT_MASK_16BIT_TO_32BIT;
     }

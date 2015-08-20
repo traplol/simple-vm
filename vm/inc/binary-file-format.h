@@ -1,11 +1,12 @@
 #ifndef _PROJECTS_SIMPLE_VM_BINARY_FILE_FORMAT_H
 #define _PROJECTS_SIMPLE_VM_BINARY_FILE_FORMAT_H
+#include "typedefs.h"
 
 typedef struct binary_file {
-    unsigned long data_section_len;
-    unsigned char *data_section;
-    unsigned long text_section_len;
-    unsigned char *text_section;
+    ui32 data_section_len;
+    ui8 *data_section;
+    ui32 text_section_len;
+    ui8 *text_section;
 } binary_file_t;
 
 typedef enum {
