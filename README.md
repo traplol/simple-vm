@@ -9,6 +9,8 @@ fixed width of 32 bits.
 usage
 =====
 ```
+$ git clone https://github.com/traplol/simple-vm.git
+$ cd simple-vm
 $ make
 $ cd bin
 $ ./assembler ../examples/recursive.asm -o recursive.bin
