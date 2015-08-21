@@ -11,12 +11,12 @@
 
 register_t registers[REGISTER_COUNT];
 unsigned char memspace[MEMSIZE];
-int32_t program_halted = 0;
+i32 program_halted = 0;
 
 
 void dump_registers(void) {
     char *str, *imm_str;
-    for (int32_t i = 0; i < REGISTER_COUNT; ++i) {
+    for (i32 i = 0; i < REGISTER_COUNT; ++i) {
         if (i >= F0 && i <= F3) {
             printf("%s: %f\n", reg_to_str(i), *((float*)registers + i));
         }
@@ -31,10 +31,10 @@ void dump_registers(void) {
 }
 
 void dump_text_section(void) {
-    int32_t col = 0;
-    int32_t *start, *end;
-    start = (int32_t*)(memspace+TEXT_SECTION_START);
-    end = (int32_t*)(memspace+TEXT_SECTION_START + TEXT_SECTION_SIZE);
+    i32 col = 0;
+    i32 *start, *end;
+    start = (i32*)(memspace+TEXT_SECTION_START);
+    end = (i32*)(memspace+TEXT_SECTION_START + TEXT_SECTION_SIZE);
     for (col = 0; start != end; ++start, ++col) {
         if (col == 11) {
             printf("\n");
@@ -46,7 +46,7 @@ void dump_text_section(void) {
 }
 
 void dump_data_section(void) {
-    int32_t col = 0;
+    i32 col = 0;
     unsigned char *tmp = &memspace[DATA_SECTION_START];
     unsigned char *end = &memspace[DATA_SECTION_START + DATA_SECTION_SIZE];
     unsigned char data, *start = tmp;
@@ -67,8 +67,8 @@ void dump_data_section(void) {
 }
 
 void disassemble_program(unsigned char *program, size_t size) {
-    for (size_t i = 0; i < size / sizeof (int32_t); ++i) {
-        print_dissassembly(((int32_t*)program)[i]);
+    for (size_t i = 0; i < size / sizeof (i32); ++i) {
+        print_dissassembly(((i32*)program)[i]);
     }
 }
 
@@ -88,40 +88,40 @@ void load_data(unsigned char *data, size_t size) {
     memcpy(memspace+DATA_SECTION_START, data, size);
 }
 
-void pprint_stack_helper(int32_t addr, int32_t offs, int32_t value) {
+void pprint_stack_helper(i32 addr, i32 offs, i32 value) {
     printf(" - <stack@0x%x:%+d=0x%x>", addr, offs, value);
     if (offs == 0) {
         printf(" <~~ $sp");
     }
     printf("\n");
 }
-void pprint_stack(int32_t num) {
-    int32_t *stack_addr;
-    int32_t offs;
-    stack_addr = ((int32_t*)(memspace + num));
+void pprint_stack(i32 num) {
+    i32 *stack_addr;
+    i32 offs;
+    stack_addr = ((i32*)(memspace + num));
     printf("\n");
     for (int i = 5; i > 0; --i) {
-        offs = i * sizeof(int32_t);
+        offs = i * sizeof(i32);
         if (num+offs < MEMSIZE) {
             pprint_stack_helper(num+offs, offs, *(stack_addr+i));
         }
     }
-    offs = 0 * sizeof(int32_t);
+    offs = 0 * sizeof(i32);
     pprint_stack_helper(num+offs, offs, *(stack_addr+0));
     for (int i = -1; i >= -5; --i) {
-        offs = i * sizeof(int32_t);
+        offs = i * sizeof(i32);
         pprint_stack_helper(num+offs, offs, *(stack_addr+i));
     }
 }
 
-void pprint(char *oper, int32_t num) {
+void pprint(char *oper, i32 num) {
     printf("%s=0x%x", oper, num);
     if (50000 < num && num < MEMSIZE) {
         pprint_stack(num);
     }
     printf("\n");
 }
-void debug_disasm(int32_t ins) {
+void debug_disasm(i32 ins) {
     instruction_t *instr = disassemble_instruction(ins);
     puts("===========================");
     puts(instr->disassembled_str);
@@ -149,10 +149,10 @@ void debug_disasm(int32_t ins) {
 
 void run(void) {
     size_t pc; 
-    int32_t ins;
+    i32 ins;
     while (program_halted == 0) {
         pc = registers[PC];
-        ins = *((int32_t*)(memspace+pc));
+        ins = *((i32*)(memspace+pc));
 #ifdef DEBUG_DISASSEM
         debug_disasm(ins);
 #endif
@@ -168,10 +168,10 @@ void init(void) {
     registers[FP] = STACK_START;
 }
 
-void execute(int32_t ins) {
+void execute(i32 ins) {
     opcode_t op;
     register_t r1, r2;
-    int32_t imm16, imm21;
+    i32 imm16, imm21;
 
     op = get_opcode(ins);
     r1 = get_r1(ins);
@@ -193,7 +193,7 @@ void execute(int32_t ins) {
             break;
         case RET:
             registers[SP] += 4;
-            registers[PC] = *((int32_t*)(memspace + registers[SP]));
+            registers[PC] = *((i32*)(memspace + registers[SP]));
             break;
 
         case ADD:
@@ -257,11 +257,11 @@ void execute(int32_t ins) {
             registers[PC] += 4;
             break;
         case LW:
-            registers[r1] = *((int32_t*)(imm16 + memspace + registers[r2]));
+            registers[r1] = *((i32*)(imm16 + memspace + registers[r2]));
             registers[PC] += 4;
             break;
         case SW:
-            *((int32_t*)(imm16 + memspace + registers[r2])) = registers[r1];
+            *((i32*)(imm16 + memspace + registers[r2])) = registers[r1];
             registers[PC] += 4;
             break;
 
@@ -286,13 +286,13 @@ void execute(int32_t ins) {
             registers[PC] = registers[r1];
             break;
         case PUSH:
-            *((int32_t*)(memspace + registers[SP])) = registers[r1];
+            *((i32*)(memspace + registers[SP])) = registers[r1];
             registers[SP] -= 4;
             registers[PC] += 4;
             break;
         case POP:
             registers[SP] += 4;
-            registers[r1] = *((int32_t*)(memspace + registers[SP]));
+            registers[r1] = *((i32*)(memspace + registers[SP]));
             registers[PC] += 4;
             break;
         case PRINTS:
@@ -330,12 +330,12 @@ void execute(int32_t ins) {
             break;
         case CALL:
             /* Push return address to stack */
-            *((int32_t*)(memspace + registers[SP])) = registers[PC] + 4;
+            *((i32*)(memspace + registers[SP])) = registers[PC] + 4;
             registers[SP] -= 4;
             registers[PC] = imm21;
             break;
         case PUSHI:
-            *((int32_t*)(memspace + registers[SP])) = imm21;
+            *((i32*)(memspace + registers[SP])) = imm21;
             registers[SP] -= 4;
             registers[PC] += 4;
             break;

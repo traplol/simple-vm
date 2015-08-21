@@ -39,6 +39,7 @@ obj/
 .ycm_*
 
 # emacs
+.*
 *~
 \#*\#
 /.emacs.dekstop

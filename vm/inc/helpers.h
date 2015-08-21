@@ -42,7 +42,7 @@ char *to_lower(char *str);
 int count_char(char *str, char c);
 
 /* Prints an instruction in disassembled format. */
-void print_dissassembly(int32_t ins);
+void print_dissassembly(i32 ins);
 
 /* Returns if a character is visibly printable. */
 static inline i32 is_printable(i8 c) {

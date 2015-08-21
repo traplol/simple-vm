@@ -74,7 +74,7 @@ char *str_cat(size_t count, ...) {
     return ret;
 }
 
-void print_dissassembly(int32_t ins) {
+void print_dissassembly(i32 ins) {
     instruction_t *instruction = disassemble_instruction(ins);
     puts(instruction->disassembled_str);
     free_instruction(&instruction);
@@ -181,7 +181,7 @@ char *reg_to_str(register_t r) {
     }
 }
 
-char *imm_to_str(int32_t imm, char *fmt) {
+char *imm_to_str(i32 imm, char *fmt) {
     const i32 len = 40;
     char *buf = calloc(len, sizeof *buf);
     snprintf(buf, len, fmt, imm);

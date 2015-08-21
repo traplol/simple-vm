@@ -83,19 +83,19 @@ void do_operands(instruction_t *ins) {
 instruction_t *make_no_operand_instruction(opcode_t opcode) {
     return make_instruction(opcode, 0, 0, 0);
 }
-instruction_t *make_one_operand_instruction(opcode_t opcode, int32_t operand1) {
+instruction_t *make_one_operand_instruction(opcode_t opcode, i32 operand1) {
     return make_instruction(opcode, operand1, 0, 0);
 }
-instruction_t *make_two_operand_instruction(opcode_t opcode, int32_t operand1, int32_t operand2) {
+instruction_t *make_two_operand_instruction(opcode_t opcode, i32 operand1, i32 operand2) {
     return make_instruction(opcode, operand1, operand2, 0);
 }
-instruction_t *make_three_operand_instruction(opcode_t opcode, int32_t operand1, int32_t operand2, int32_t operand3) {
+instruction_t *make_three_operand_instruction(opcode_t opcode, i32 operand1, i32 operand2, i32 operand3) {
     return make_instruction(opcode, operand1, operand2, operand3);
 }
 
 /* Makes a new instruction with all of the components to print,
  * and the assembled value of the instruction. */
-instruction_t *make_instruction(opcode_t opcode, int32_t operand1, int32_t operand2, int32_t operand3) {
+instruction_t *make_instruction(opcode_t opcode, i32 operand1, i32 operand2, i32 operand3) {
     instruction_t *ins = malloc(sizeof *ins);
     ins->type = get_type(opcode);
     ins->opcode = opcode;
@@ -120,19 +120,19 @@ void free_instruction(instruction_t **instruction) {
     }
 }
 
-int32_t assemble_no_operands(opcode_t opcode) {
+i32 assemble_no_operands(opcode_t opcode) {
     return opcode << OPCODE_SHIFT;
 }
-int32_t assemble_register_register(opcode_t op, register_t r1, register_t r2 ) {
-    int32_t ins = 0;
+i32 assemble_register_register(opcode_t op, register_t r1, register_t r2 ) {
+    i32 ins = 0;
     ins |= (op << OPCODE_SHIFT);
     ins |= (r1 << R1_SHIFT);
     ins |= (r2 << R2_SHIFT);
     return ins;
 }
-int32_t assemble_register_immediate(opcode_t op, register_t r, int32_t imm) {
-    int32_t ins = 0;
-    int32_t sign_bit = (imm & SIGN_BIT_MASK_32BIT) >> SIGN_BIT_SHIFT_21BIT;
+i32 assemble_register_immediate(opcode_t op, register_t r, i32 imm) {
+    i32 ins = 0;
+    i32 sign_bit = (imm & SIGN_BIT_MASK_32BIT) >> SIGN_BIT_SHIFT_21BIT;
     imm &= IMMEDIATE_MASK_21BIT;
     imm |= sign_bit;
 
@@ -141,25 +141,25 @@ int32_t assemble_register_immediate(opcode_t op, register_t r, int32_t imm) {
     ins |= imm;
     return ins;
 }
-int32_t assemble_register_no_immediate(opcode_t op, register_t r) {
-    int32_t ins = 0;
+i32 assemble_register_no_immediate(opcode_t op, register_t r) {
+    i32 ins = 0;
     ins |= (op << OPCODE_SHIFT);
     ins |= (r << R1_SHIFT);
     return ins;
 }
-int32_t assemble_register_register_offset(opcode_t op, register_t r1, register_t r2,int32_t imm) {
-    int32_t ins = assemble_register_register(op, r1, r2);
+i32 assemble_register_register_offset(opcode_t op, register_t r1, register_t r2,i32 imm) {
+    i32 ins = assemble_register_register(op, r1, r2);
 
-    int32_t sign_bit = (imm & SIGN_BIT_MASK_32BIT) >> SIGN_BIT_SHIFT_16BIT;
+    i32 sign_bit = (imm & SIGN_BIT_MASK_32BIT) >> SIGN_BIT_SHIFT_16BIT;
     imm &= IMMEDIATE_MASK_16BIT;
     imm |= sign_bit;
 
     ins |= imm;
     return ins;
 }
-int32_t assemble_immediate_no_register(opcode_t op, int32_t imm) {
-    int32_t ins = 0;
-    int32_t sign_bit = (imm & SIGN_BIT_MASK_32BIT) >> SIGN_BIT_SHIFT_21BIT;
+i32 assemble_immediate_no_register(opcode_t op, i32 imm) {
+    i32 ins = 0;
+    i32 sign_bit = (imm & SIGN_BIT_MASK_32BIT) >> SIGN_BIT_SHIFT_21BIT;
     imm &= IMMEDIATE_MASK_21BIT;
     imm |= sign_bit;
 
@@ -170,7 +170,7 @@ int32_t assemble_immediate_no_register(opcode_t op, int32_t imm) {
 }
 
 /* Compiles an instruction to its binary representation. */
-int32_t assemble_instruction(opcode_t opcode, int32_t operand1, int32_t operand2, int32_t operand3) {
+i32 assemble_instruction(opcode_t opcode, i32 operand1, i32 operand2, i32 operand3) {
     instruction_type_t ty = get_type(opcode);
 
     switch(ty) {
@@ -193,7 +193,7 @@ int32_t assemble_instruction(opcode_t opcode, int32_t operand1, int32_t operand2
 }
 
 
-instruction_t *disassemble_instruction(int32_t instruction) {
+instruction_t *disassemble_instruction(i32 instruction) {
     opcode_t op = get_opcode(instruction);
     register_t r1 = get_r1(instruction);
     register_t r2 = get_r2(instruction);

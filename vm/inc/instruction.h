@@ -2,9 +2,11 @@
 #define SIMPLE_VM_VM_INC_INSTRUCTION_H
 
 #include <stdint.h>
-#include "opdefs.h"
 
-#define INSTRUCTION_SIZE (sizeof(int32_t))
+#include "opdefs.h"
+#include "typedefs.h"
+
+#define INSTRUCTION_SIZE (sizeof(i32))
 
 typedef enum {
     INVALID_INSTRUCTION_TYPE = 0,
@@ -41,20 +43,20 @@ typedef struct instruction {
     opcode_t opcode;
     union {
         register_t reg;
-        int32_t imm;
+        i32 imm;
     } operand1;
 
     union {
         register_t reg;
-        int32_t imm;
+        i32 imm;
     } operand2;
 
     union {
         register_t reg;
-        int32_t imm;
+        i32 imm;
     } operand3;
 
-    int32_t assembled_value;
+    i32 assembled_value;
 
     char *opcode_str, *operand1_str, *operand2_str, *operand3_str;
     char *disassembled_str;
@@ -62,20 +64,20 @@ typedef struct instruction {
 
 /* Makes a new instruction with all of the components to print,
  * and the assembled value of the instruction. */
-instruction_t *make_instruction(opcode_t opcode, int32_t operand1, int32_t operand2, int32_t operand3);
+instruction_t *make_instruction(opcode_t opcode, i32 operand1, i32 operand2, i32 operand3);
 instruction_t *make_no_operand_instruction(opcode_t opcode);
-instruction_t *make_one_operand_instruction(opcode_t opcode, int32_t operand1);
-instruction_t *make_two_operand_instruction(opcode_t opcode, int32_t operand1, int32_t operand2);
-instruction_t *make_three_operand_instruction(opcode_t opcode, int32_t operand1, int32_t operand2, int32_t operand3);
+instruction_t *make_one_operand_instruction(opcode_t opcode, i32 operand1);
+instruction_t *make_two_operand_instruction(opcode_t opcode, i32 operand1, i32 operand2);
+instruction_t *make_three_operand_instruction(opcode_t opcode, i32 operand1, i32 operand2, i32 operand3);
 
 /* Disassembles an assembled instruction */
-instruction_t *disassemble_instruction(int32_t instruction);
+instruction_t *disassemble_instruction(i32 instruction);
 
 /* Frees the instruction and sets it to null. */
 void free_instruction(instruction_t **instruction);
 
 /* Compiles an instruction to it's binary representation. */
-int32_t assemble_instruction(opcode_t opcode, int32_t operand1, int32_t operand2, int32_t operand3);
+i32 assemble_instruction(opcode_t opcode, i32 operand1, i32 operand2, i32 operand3);
 
 
 /* Returns the bit type for the given opcode. */

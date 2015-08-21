@@ -1,7 +1,7 @@
 #ifndef _PROJECTS_SIMPLE_VM_VM_H
 #define _PROJECTS_SIMPLE_VM_VM_H
 
-#include <stdint.h>
+#include "typedefs.h"
 
 /* These values are arbitrary and will be change in the future. */
 #define MEMSIZE (0x10000)
@@ -38,7 +38,7 @@ void init(void);
 void run(void);
 
 /* Executes one instruction */
-void execute(int32_t ins);
+void execute(i32 ins);
 
 #endif
 
