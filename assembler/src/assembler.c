@@ -39,7 +39,10 @@ void assemble(token_list_t *list, char *ofile) {
     generate_symbols(prog_info, list);
     token_t *tk = list->head;
     while (tk) {
-        if (-1 == compile_token(prog_info, &tk)) { fputs("There were errors, aborting.\n", stderr); return; }
+        if (-1 == compile_token(prog_info, &tk)) {
+            fputs("There were errors, aborting.\n", stderr);
+            return;
+        }
     }
     binary_file_t *bf = calloc(1, sizeof *bf);
     /* Copy the data section. */

@@ -146,16 +146,21 @@ void parse_register(token_list_t *list, token_t **tok) {
     fprintf(stderr, "Expected register identifer at line %d\n", tk->line_num);
 }
 
-void parse_directive(token_list_t *list, token_t **tok) {
+void self_evals(token_list_t *list, token_t **tok) {
     token_t *tk = *tok;
-    if (tk->next) {
-        tk = tk->next;
-        *tok = tk;
-        push_back_token(list, tk->str, tk->line_num, TK_DIRECTIVE, 0);
-    }
-    else {
-        fprintf(stderr, "Expected directive at line %d\n", tk->line_num);
-    }
+    push_back_token(list, tk->str, tk->line_num, tk->type, 0);
+}
+
+void parse_directive(token_list_t *list, token_t **tok) {
+    self_evals(list, tok);
+}
+
+void parse_char_lit(token_list_t *list, token_t **tok) {
+    self_evals(list, tok);
+}
+
+void parse_string_lit(token_list_t *list, token_t **tok) {
+    self_evals(list, tok);
 }
 
 token_list_t *parse(token_list_t *list) {
@@ -174,7 +179,9 @@ token_list_t *parse(token_list_t *list) {
             case TK_IDENT: parse_ident(tk_list, &tok); break;
             case TK_LPAREN: parse_arithmetic_expr(tk_list, &tok); break;
             case TK_DOLLAR: parse_register(tk_list, &tok); break;
-            case TK_DOT: parse_directive(tk_list, &tok); break;
+            case TK_DIRECTIVE: parse_directive(tk_list, &tok); break;
+            case TK_CHAR_LIT: parse_char_lit(tk_list, &tok); break;
+            case TK_STRING_LIT: parse_string_lit(tk_list, &tok); break;
         }
         tok = tok->next;
     }

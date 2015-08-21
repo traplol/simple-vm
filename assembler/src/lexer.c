@@ -6,10 +6,14 @@
 #include "lexer.h"
 #include "helpers.h"
 
+char *parse_string(char **copy);
+
 token_list_t *tokenize(char *code) {
-    int tk_line_num = 0, tk_internal = 0;
+    int tk_line_num = 1, tk_internal = 0;
     char *tk_str = NULL;
     char *copy = strdup(code);
+    // note freeable_copy points to the beginning of copy while the copy pointer
+    // is modified.
     char *pos, *freeable_copy = copy;
     token_type_t tk_type;
     token_list_t *tk_list = make_token_list();
@@ -43,6 +47,23 @@ token_list_t *tokenize(char *code) {
             while (*copy != 0 && *copy != '\n' && *copy != '\r');
             continue;
         }
+        else if (*copy == '.' && isalpha(*(copy+1))) {
+            pos = copy;
+            ++copy;
+            for (; isalpha(*copy); ++copy);
+            tk_str = substr(pos, copy-pos);
+            tk_type = TK_DIRECTIVE;
+        }
+        else if (*copy == '\'' && isalpha(*(copy+1)) && *(copy+2) == '\'') {
+            ++copy; /* eat first ' */
+            tk_str = substr(copy, 1);
+            tk_type = TK_CHAR_LIT;
+            copy += 2; /* eat second ' */
+        }
+        else if (*copy == '"') {
+            tk_str = parse_string(&copy);
+            tk_type = TK_STRING_LIT;
+        }
         else {
             switch (*copy) {
                 default: tk_str = strdup("(unknown)"); tk_type = TK_UNKNOWN;
@@ -68,3 +89,51 @@ token_list_t *tokenize(char *code) {
     return tk_list;
 }
 
+char escape(char c) {
+    switch (c) {
+        default: return c;
+        case 't': return '\t';
+        case 'n': return '\n';
+        case 'r': return '\r';
+    }
+}
+
+/* Parses a "str\"ing" */
+char *parse_string(char **copy) {
+    #define SIZE 1024
+    char *string, *old, *_copy, tmp[SIZE];
+    int i = 0;
+    _copy = *copy;
+    if (*_copy != '"') {
+        return NULL;
+    }
+    ++_copy;
+    string = calloc(SIZE, sizeof(*string));
+    while(1) {
+        if (i + 1 >= SIZE) {
+            tmp[i] = 0;
+            old = string;
+            string = str_cat(2, string, tmp);
+            free(old);
+            i = 0;
+        }
+        if (*_copy == '"') {
+            tmp[i] = 0;
+            old = string;
+            string = str_cat(2, string, tmp);
+            free(old);
+            break;
+        }
+        else if (*_copy == '\\') {
+            _copy++; /* eat the '\' */
+            tmp[i++] = escape(*_copy);
+        }
+        else {
+            tmp[i++] = *_copy;
+        }
+        _copy++;
+    }
+    #undef SIZE
+    *copy = _copy+1;
+    return string;
+}

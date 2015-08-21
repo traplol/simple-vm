@@ -151,7 +151,7 @@ int lookup_label_offset(program_info_t *prog_info, opcode_t opcode, token_t *tok
 void insert_text_or_data(program_info_t *prog_info, void *thing, size_t thing_size) {
     if (prog_info->current_section == DATA) {
         /* Resize the data section. */
-        if (prog_info->data_idx + thing_size > prog_info->data_len) {
+        while (prog_info->data_idx + thing_size > prog_info->data_len) {
             prog_info->data_len *= 2;
             prog_info->data = realloc(prog_info->data, prog_info->data_len);
         }
@@ -162,7 +162,7 @@ void insert_text_or_data(program_info_t *prog_info, void *thing, size_t thing_si
     }
     else if (prog_info->current_section == TEXT) {
         /* Resize the text section. */
-        if (prog_info->text_idx  >= prog_info->text_len ) {
+        while (prog_info->text_idx + thing_size >= prog_info->text_len ) {
             prog_info->text_len *= 2;
             prog_info->text = realloc(prog_info->text, prog_info->text_len * sizeof *(prog_info->text));
         }
@@ -172,17 +172,32 @@ void insert_text_or_data(program_info_t *prog_info, void *thing, size_t thing_si
     }
 }
 
+
+int compile_new_label(program_info_t *prog_info, token_t **token);
 int compile_directive(program_info_t *prog_info, token_t **token) {
     token_t *tk = *token;
-    if (strcmp(tk->str, "data") == 0) { prog_info->current_section = DATA; }
-    else if (strcmp(tk->str, "text") == 0) { prog_info->current_section = TEXT; }
+    if (strcmp(tk->str, ".data") == 0) {
+        prog_info->current_section = DATA;
+    }
+    else if (strcmp(tk->str, ".text") == 0) {
+        prog_info->current_section = TEXT;
+    }
+    else if (strcmp(tk->str, ".char") == 0) {
+        tk = tk->next;
+        compile_new_label(prog_info, &tk);
+        insert_text_or_data(prog_info, tk->str, 1);
+    }
+    else if (strcmp(tk->str, ".asciiz") == 0) {
+        tk = tk->next;
+        compile_new_label(prog_info, &tk);
+        insert_text_or_data(prog_info, tk->str, strlen(tk->str) + 1);
+    }
     else {
         err("Unknown directive", (*token)->line_num);
         return -1;
     }
 
-    /* TODO: .word, .ascii */
-    *token = (*token)->next;
+    *token = tk->next;
     return 0;
 }
 
@@ -310,11 +325,12 @@ int compile_token(program_info_t *prog_info, token_t **token) {
             printf("~~~~>%s\n",(*token)->str);
             *token = (*token)->next;
             return -1;
+        case TK_CHAR_LIT:
+        case TK_STRING_LIT:
         case TK_NEW_LABEL:
+        case TK_DIRECTIVE:
             *token = (*token)->next;
             return 0;
-        case TK_DIRECTIVE:
-            return compile_directive(prog_info, token);
         case TK_INSTR:
             return compile_instruction(prog_info, token);
     }

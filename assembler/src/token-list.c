@@ -57,4 +57,3 @@ token_t *push_back_token(token_list_t *list, char *str, int line_num, token_type
     }
     return t;
 }
-
