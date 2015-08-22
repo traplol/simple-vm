@@ -172,7 +172,7 @@ char parse_char(char **copy) {
     else if (*_copy == '\\') {
         ++_copy;
         if (*_copy == 'x') {
-            value = escape_hex(_copy);
+            value = escape_hex(_copy+1);
             *copy = _copy + 3;
         }
         else {
