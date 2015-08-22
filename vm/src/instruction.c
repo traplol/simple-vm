@@ -229,6 +229,7 @@ instruction_type_t get_type(opcode_t opcode) {
         case HALT:
         case NOP:
         case RET:
+        case SYSCALL:
             return NO_OPERANDS;
 
         case ADD:

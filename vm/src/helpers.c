@@ -106,6 +106,7 @@ char *op_to_str(opcode_t op) {
         case HALT: return "halt";
         case NOP:  return "nop";
         case RET:  return "ret";
+        case SYSCALL: return "syscall";
 
         case ADD:  return "add";
         case MUL:  return "mul";
@@ -124,8 +125,8 @@ char *op_to_str(opcode_t op) {
         case MOV:  return "mov";
         case LW:   return "lw";
         case SW:   return "sw";
-        case LB: return "lb";
-        case SB: return "sb";
+        case LB:   return "lb";
+        case SB:   return "sb";
 
         case ADDI: return "addi";
         case MULI: return "muli";
@@ -165,8 +166,8 @@ char *reg_to_str(register_t r) {
         case G7:   return "g7";
         case G8:   return "g8";
         case G9:   return "g9";
-        case G10:   return "g10";
-        case G11:   return "g11";
+        case G10:  return "g10";
+        case G11:  return "g11";
 
         case F0:   return "f0";
         case F1:   return "f1";
@@ -176,6 +177,7 @@ char *reg_to_str(register_t r) {
         case R0:   return "r0";
         case R1:   return "r1";
 
+        case SYS:  return "sys";
         case Z:    return "z";
         case SP:   return "sp";
         case FP:   return "fp";
@@ -196,6 +198,7 @@ opcode_t str_to_op(char *str) {
     if (strcmp(str, "halt") == 0) { op = HALT; }
     else if (strcmp(str, "nop") == 0) { op = NOP; }
     else if (strcmp(str, "ret") == 0) { op = RET; }
+    else if (strcmp(str, "syscall") == 0) { op = SYSCALL; }
 
     else if (strcmp(str, "add") == 0) { op = ADD; }
     else if (strcmp(str, "mul") == 0) { op = MUL; }
@@ -264,6 +267,7 @@ register_t str_to_reg(char *str) {
     else if (strcmp(str, "r0") == 0) { reg = R0; }
     else if (strcmp(str, "r1") == 0) { reg = R1; }
 
+    else if (strcmp(str, "sys") == 0) { reg = SYS; }
     else if (strcmp(str, "z") == 0) { reg = Z; }
     else if (strcmp(str, "sp") == 0) { reg = SP; }
     else if (strcmp(str, "fp") == 0) { reg = FP; }

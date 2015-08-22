@@ -3,16 +3,16 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stddef.h>
+#include <time.h>
 
 #include "vm.h"
 #include "helpers.h"
 #include "instruction.h"
 
 
-register_t registers[REGISTER_COUNT];
+ui32 registers[REGISTER_COUNT];
 unsigned char memspace[MEMSIZE];
 ui32 program_halted = 0;
-
 
 void dump_registers(void) {
     char *str, *imm_str;
@@ -36,7 +36,7 @@ void dump_text_section(void) {
     start = (ui32*)(memspace+TEXT_SECTION_START);
     end = (ui32*)(memspace+TEXT_SECTION_START + TEXT_SECTION_SIZE);
     for (col = 0; start != end; ++start, ++col) {
-        if (col == 11) {
+        if (col == 7) {
             printf("\n");
             col = 0;
         }
@@ -168,6 +168,7 @@ void init(void) {
     registers[FP] = STACK_START;
 }
 
+ui32 syscall(ui32 func);
 void execute(ui32 ins) {
     opcode_t op;
     register_t r1, r2;
@@ -194,6 +195,10 @@ void execute(ui32 ins) {
         case RET:
             registers[SP] += 4;
             registers[PC] = *((ui32*)(memspace + registers[SP]));
+            break;
+        case SYSCALL:
+            registers[R1] = syscall(registers[SYS]);
+            registers[PC] += 4;
             break;
 
         case ADD:
@@ -354,4 +359,14 @@ void execute(ui32 ins) {
     }
 }
 
+typedef ui32(*func)(void);
 
+func sys_funcs[] = {
+    NULL,
+    (func)clock,
+};
+
+ui32 syscall(ui32 func) {
+    ui32 result = sys_funcs[func]();
+    return result;
+}

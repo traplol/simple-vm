@@ -26,6 +26,7 @@ typedef enum opcode {
     HALT = 0,
     NOP,
     RET,
+    SYSCALL,
 
     /* REGISTER_REGISTER */
     /* oooooo rrrrr rrrrr 0000000000000000 */
@@ -96,6 +97,8 @@ typedef enum registers {
     F0, F1, F2, F3,                             /* 4 */
     /* Return registers. */
     R0, R1,                                     /* 2 */
+    /* System call register. */
+    SYS,                                        /* 1 */
     /* Comparison flag. */
     Z,                                          /* 1 */
     /* Stack pointer. */
@@ -107,7 +110,7 @@ typedef enum registers {
 
     /* The number of registers. */
     REGISTER_COUNT
-} register_t;                                   /* 23 */
+} register_t;                                   /* 24 */
 
 #endif
 
