@@ -210,6 +210,7 @@ int compile_directive(program_info_t *prog_info, token_t **token) {
         compile_new_label(prog_info, &tk);
         raw_data = calloc(tk->internal.imm, sizeof(*raw_data));
         insert_text_or_data(prog_info, raw_data, tk->internal.imm);
+        free(raw_data);
     }
     else {
         err("Unknown directive", (*token)->line_num);
