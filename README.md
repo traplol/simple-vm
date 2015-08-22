@@ -25,4 +25,4 @@ docs
 
 [Instruction layout](docs/instruction-layout.md)
 
-[Instructions](doc/instructions.md)
+[Instructions](docs/instructions.md)
