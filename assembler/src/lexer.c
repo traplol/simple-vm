@@ -8,6 +8,10 @@
 
 char *parse_string(char **copy);
 
+int is_part_of_ident(int c) {
+    return c == '_' || isalnum(c);
+}
+
 token_list_t *tokenize(char *code) {
     int tk_line_num = 1, tk_internal = 0;
     char *tk_str = NULL;
@@ -30,7 +34,7 @@ token_list_t *tokenize(char *code) {
         if (*copy == '_' || isalpha(*copy)) {
             pos = copy;
             ++copy;
-            for (; *copy == '_' || isalnum(*copy); ++copy);
+            for (; is_part_of_ident(*copy); ++copy);
             tk_str = substr(pos, copy-pos);
             tk_type = TK_IDENT;
         }
@@ -47,19 +51,23 @@ token_list_t *tokenize(char *code) {
             while (*copy != 0 && *copy != '\n' && *copy != '\r');
             continue;
         }
+        /* Directive */
         else if (*copy == '.' && isalpha(*(copy+1))) {
             pos = copy;
             ++copy;
-            for (; isalpha(*copy); ++copy);
+            for (; is_part_of_ident(*copy); ++copy);
             tk_str = substr(pos, copy-pos);
             tk_type = TK_DIRECTIVE;
         }
+        /* Char */
         else if (*copy == '\'' && isalpha(*(copy+1)) && *(copy+2) == '\'') {
+            /* TODO: Escape codes. */
             ++copy; /* eat first ' */
             tk_str = substr(copy, 1);
             tk_type = TK_CHAR_LIT;
             copy += 2; /* eat second ' */
         }
+        /* String */
         else if (*copy == '"') {
             tk_str = parse_string(&copy);
             tk_type = TK_STRING_LIT;
@@ -86,6 +94,7 @@ token_list_t *tokenize(char *code) {
         tk_str = NULL;
     }
     free(freeable_copy);
+    push_back_token(tk_list, "EOF", -1, TK_EOF, 0);
     return tk_list;
 }
 

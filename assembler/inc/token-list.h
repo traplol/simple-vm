@@ -4,6 +4,7 @@
 #include "opdefs.h"
 
 typedef enum {
+    TK_EOF = -1,        /* End of File */
     TK_UNKNOWN = 0,     /* Unknown token. */
     TK_PLUS,            /* '+' */
     TK_MINUS,           /* '-' */

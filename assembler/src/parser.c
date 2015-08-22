@@ -64,11 +64,11 @@ int eval(char *expr) {
 
 void parse_arithmetic_expr(token_list_t *list, token_t **tok) {
     /* Parse arithmetic expression. */
-    char *catted_str = NULL, *tmp;
+    char *catted_str = NULL, *tmp, buf[30];
     token_t *start = *tok;
     token_t *end = start->next;
     int st_line_num = start->line_num;
-    int paren_count = 1;
+    int paren_count = 1, evaled;
     while (paren_count) {
         if (end == NULL) {
             fprintf(stderr, "Mismatched parens at line %d\n", start->line_num);
@@ -104,9 +104,9 @@ void parse_arithmetic_expr(token_list_t *list, token_t **tok) {
         free(tmp);
         start = start->next;
     }
-    int evaled = eval(catted_str);
-    char buf[30];
+    evaled = eval(catted_str);
     sprintf(buf, "%d", evaled);
+    /* FIXME:? Maybe this token text shouldn't be the evaluated result. */
     push_back_token(list, buf, st_line_num, TK_IMMEDIATE, evaled);
     *tok = end->prev;
     free(catted_str);
@@ -167,7 +167,7 @@ token_list_t *parse(token_list_t *list) {
     token_list_t *tk_list = make_token_list();
     token_t *tok = list->head;
 
-    while (tok) {
+    while (tok && tok->type != TK_EOF) {
         switch (tok->type) {
             default:
             case TK_UNKNOWN:
