@@ -43,6 +43,7 @@ int main(int argc, char **argv) {
     init();
     load_program(r->text_section, r->text_section_len);
     load_data(r->data_section, r->data_section_len);
+    free_binary_file(&r);
     if (dump_data_flag) {
         dump_data_section();
     }
