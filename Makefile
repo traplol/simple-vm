@@ -22,7 +22,7 @@ clean: bin
 	@cd assembler && make clean
 	@echo "Done"
 	@echo "Cleaning bin/"
-	cd bin/; rm -f vm; rm -f assembler; rm -f *.bin
+	cd bin/; rm -f vm assembler *.bin *.dump
 	@echo "Done"
 
 bin:
