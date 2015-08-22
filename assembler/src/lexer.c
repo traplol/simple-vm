@@ -7,6 +7,7 @@
 #include "helpers.h"
 
 char *parse_string(char **copy);
+char parse_char(char **copy);
 
 int is_part_of_ident(int c) {
     return c == '_' || isalnum(c);
@@ -60,12 +61,10 @@ token_list_t *tokenize(char *code) {
             tk_type = TK_DIRECTIVE;
         }
         /* Char */
-        else if (*copy == '\'' && isalpha(*(copy+1)) && *(copy+2) == '\'') {
-            /* TODO: Escape codes. */
-            ++copy; /* eat first ' */
-            tk_str = substr(copy, 1);
+        else if (*copy == '\'') {
+            tk_str = strdup("<char>");
+            tk_internal = parse_char(&copy);
             tk_type = TK_CHAR_LIT;
-            copy += 2; /* eat second ' */
         }
         /* String */
         else if (*copy == '"') {
@@ -92,6 +91,7 @@ token_list_t *tokenize(char *code) {
         push_back_token(tk_list, tk_str, tk_line_num, tk_type, tk_internal);
         free(tk_str);
         tk_str = NULL;
+        tk_internal = 0;
     }
     free(freeable_copy);
     push_back_token(tk_list, "EOF", -1, TK_EOF, 0);
@@ -145,4 +145,44 @@ char *parse_string(char **copy) {
     #undef SIZE
     *copy = _copy+1;
     return string;
+}
+
+int is_hex(char c) {
+    return (c >= '0' && c <= '9') ||
+        (c >= 'a' && c <= 'f') ||
+        (c >= 'A' && c <= 'F');
+}
+
+char escape_hex(char *str) {
+    /* TODO: Implement this better. */
+    return strtol(str, 0, 16);
+}
+
+char parse_char(char **copy) {
+    char *_copy = *copy;
+    char value = 0;
+    if (*_copy != '\'') {
+        /* TODO: Handle error, no valid start of char. */
+    }
+    ++_copy;
+
+    if (*_copy == '\'') {
+        /* TODO: Handle error, '' is not a valid char. */
+    }
+    else if (*_copy == '\\') {
+        ++_copy;
+        if (*_copy == 'x') {
+            value = escape_hex(_copy);
+            *copy = _copy + 3;
+        }
+        else {
+            value = escape(*_copy);
+            *copy = _copy + 2;
+        }
+    }
+    else {
+        value = *_copy;
+        *copy = _copy + 2;
+    }
+    return value;
 }

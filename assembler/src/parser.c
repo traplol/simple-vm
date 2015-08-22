@@ -148,7 +148,7 @@ void parse_register(token_list_t *list, token_t **tok) {
 
 void self_evals(token_list_t *list, token_t **tok) {
     token_t *tk = *tok;
-    push_back_token(list, tk->str, tk->line_num, tk->type, 0);
+    push_back_token(list, tk->str, tk->line_num, tk->type, tk->internal.imm);
 }
 
 void parse_directive(token_list_t *list, token_t **tok) {
