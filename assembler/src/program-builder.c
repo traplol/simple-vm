@@ -3,9 +3,11 @@
 #include <stdio.h>
 
 #include "program-builder.h"
+
 #include "instruction.h"
 #include "helpers.h"
 #include "vm.h"
+#include "typedefs.h"
 
 void err(char *msg, int line_num) {
     fprintf(stderr, "Error: %s at line %d\n", msg, line_num);
@@ -182,10 +184,20 @@ int compile_directive(program_info_t *prog_info, token_t **token) {
     else if (strcmp(tk->str, ".text") == 0) {
         prog_info->current_section = TEXT;
     }
-    else if (strcmp(tk->str, ".char") == 0) {
+    else if (strcmp(tk->str, ".i8") == 0) {
         tk = tk->next;
         compile_new_label(prog_info, &tk);
-        insert_text_or_data(prog_info, tk->str, 1);
+        insert_text_or_data(prog_info, &(tk->internal.imm), sizeof(i8));
+    }
+    else if (strcmp(tk->str, ".i16") == 0) {
+        tk = tk->next;
+        compile_new_label(prog_info, &tk);
+        insert_text_or_data(prog_info, &(tk->internal.imm), sizeof(i16));
+    }
+    else if (strcmp(tk->str, ".i32") == 0) {
+        tk = tk->next;
+        compile_new_label(prog_info, &tk);
+        insert_text_or_data(prog_info, &(tk->internal.imm), sizeof(i32));
     }
     else if (strcmp(tk->str, ".asciiz") == 0) {
         tk = tk->next;
@@ -329,6 +341,7 @@ int compile_token(program_info_t *prog_info, token_t **token) {
         case TK_STRING_LIT:
         case TK_NEW_LABEL:
         case TK_DIRECTIVE:
+        case TK_IMMEDIATE:
             *token = (*token)->next;
             return 0;
         case TK_INSTR:
