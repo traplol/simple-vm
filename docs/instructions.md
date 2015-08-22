@@ -1,6 +1,14 @@
 Instructions
 ============
 
+* [No operands](#no-operands)
+* [Register to register](#register-to-register)
+* [Register to register with an offset](#register-to-register-with-an-offset)
+* [Immediate to register](#immediate-to-register)
+* [Single register with no immediate](#Single-register-with-no-immediate)
+* [Immediate with no register](#Immediate-with-no-register)
+
+
 ## No operands
 
 #### HALT 
