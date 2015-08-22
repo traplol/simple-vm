@@ -30,10 +30,10 @@ mov $g1, $r1
 li $g4, msg_beg
 prints $g4
 
-printi $g1              # verify exactly how many iterations it took.
+printi $g1              # print total microseconds
 
 li $g4, msg_end
 prints $g4
-printi $g8
+printi $g8              # verify exactly how many iterations it took.
 printc '\n'
 halt
