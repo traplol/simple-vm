@@ -178,6 +178,7 @@ void insert_text_or_data(program_info_t *prog_info, void *thing, size_t thing_si
 int compile_new_label(program_info_t *prog_info, token_t **token);
 int compile_directive(program_info_t *prog_info, token_t **token) {
     token_t *tk = *token;
+    ui8 *raw_data;
     if (strcmp(tk->str, ".data") == 0) {
         prog_info->current_section = DATA;
     }
@@ -203,6 +204,12 @@ int compile_directive(program_info_t *prog_info, token_t **token) {
         tk = tk->next;
         compile_new_label(prog_info, &tk);
         insert_text_or_data(prog_info, tk->str, strlen(tk->str) + 1);
+    }
+    else if (strcmp(tk->str, ".raw") == 0) {
+        tk = tk->next;
+        compile_new_label(prog_info, &tk);
+        raw_data = calloc(tk->internal.imm, sizeof(*raw_data));
+        insert_text_or_data(prog_info, raw_data, tk->internal.imm);
     }
     else {
         err("Unknown directive", (*token)->line_num);
