@@ -124,6 +124,8 @@ char *op_to_str(opcode_t op) {
         case MOV:  return "mov";
         case LW:   return "lw";
         case SW:   return "sw";
+        case LB: return "lb";
+        case SB: return "sb";
 
         case ADDI: return "addi";
         case MULI: return "muli";
@@ -212,6 +214,8 @@ opcode_t str_to_op(char *str) {
     else if (strcmp(str, "mov") == 0) { op = MOV; }
     else if (strcmp(str, "lw") == 0) { op = LW; }
     else if (strcmp(str, "sw") == 0) { op = SW; }
+    else if (strcmp(str, "lb") == 0) { op = LB; }
+    else if (strcmp(str, "sb") == 0) { op = SB; }
 
     else if (strcmp(str, "addi") == 0) { op = ADDI; }
     else if (strcmp(str, "muli") == 0) { op = MULI; }

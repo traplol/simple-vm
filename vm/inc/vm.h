@@ -14,7 +14,7 @@
 #define STACK_START HEAP_STACK_SECTION_STOP
 
 /* Prints the disassembly of the program. */
-void disassemble_program(unsigned char *program, size_t size);
+void disassemble_program(ui8 *program, size_t size);
 
 /* Dumps the register state to stdout. */
 void dump_registers(void);
@@ -26,10 +26,10 @@ void dump_text_section(void);
 void dump_data_section(void);
 
 /* Loads the program into the text section of the vm's memory. */
-void load_program(unsigned char *program, size_t size);
+void load_program(ui8*program, size_t size);
 
 /* Loads the data into the data section of the vm's memory. */
-void load_data(unsigned char *data, size_t size);
+void load_data(ui8 *data, size_t size);
 
 /* Resets the state of the vm. */
 void init(void);
@@ -38,7 +38,7 @@ void init(void);
 void run(void);
 
 /* Executes one instruction */
-void execute(i32 ins);
+void execute(ui32 ins);
 
 #endif
 

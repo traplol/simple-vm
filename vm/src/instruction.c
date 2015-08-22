@@ -250,6 +250,8 @@ instruction_type_t get_type(opcode_t opcode) {
 
         case LW:
         case SW:
+        case LB:
+        case SB:
             return REGISTER_REGISTER_OFFSET;
 
         case ADDI:

@@ -50,6 +50,8 @@ typedef enum opcode {
     /*    6     5     5         16         */
     LW,
     SW,
+    LB,
+    SB,
 
     /* REGISTER_IMMEDIATE */
     /* oooooo rrrrr mmmmmmmmmmmmmmmmmmmmm */
