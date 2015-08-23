@@ -186,6 +186,10 @@ void execute(ui32 ins) {
         case NOT_AN_OPCODE:
             fputs("'NOT AN OPCODE'", stderr);
             abort();
+          
+        /* NO_OPERANDS */
+        /* oooooo 00000000000000000000000000 */
+        /*    6              26              */
         case HALT:
             program_halted = 1;
             break;
@@ -201,6 +205,9 @@ void execute(ui32 ins) {
             registers[PC] += 4;
             break;
 
+        /* REGISTER_REGISTER */
+        /* oooooo rrrrr rrrrr 0000000000000000 */
+        /*    6     5     5         16         */
         case ADD:
             registers[r1] += registers[r2];
             registers[PC] += 4;
@@ -261,6 +268,11 @@ void execute(ui32 ins) {
             registers[r1] = registers[r2];
             registers[PC] += 4;
             break;
+
+
+        /* REGISTER_REGISTER_OFFSET */
+        /* oooooo rrrrr rrrrr mmmmmmmmmmmmmmmm */
+        /*    6     5     5         16         */
         case LW:
             registers[r1] = *((ui32*)(imm16 + memspace + registers[r2]));
             registers[PC] += 4;
@@ -278,6 +290,10 @@ void execute(ui32 ins) {
             registers[PC] += 4;
             break;
 
+
+        /* REGISTER_IMMEDIATE */
+        /* oooooo rrrrr mmmmmmmmmmmmmmmmmmmmm */
+        /*    6     5           21            */
         case ADDI:
             registers[r1] += imm21;
             registers[PC] += 4;
@@ -295,6 +311,9 @@ void execute(ui32 ins) {
             registers[PC] += 4;
             break;
 
+        /* REGISTER_NO_IMMEDIATE */
+        /* oooooo rrrrr 000000000000000000000 */
+        /*    6     5            21           */
         case JR:
             registers[PC] = registers[r1];
             break;
@@ -317,6 +336,9 @@ void execute(ui32 ins) {
             registers[PC] += 4;
             break;
 
+        /* IMMEDIATE_NO_REGISTER */
+        /* oooooo 00000 mmmmmmmmmmmmmmmmmmmmm  */
+        /*    6                  21            */
         case J:
             registers[PC] = imm21;
             break;

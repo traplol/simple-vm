@@ -1,6 +1,8 @@
 #ifndef SIMPLE_VM_DEFS_H
 #define SIMPLE_VM_DEFS_H
 
+#include "cassert.h"
+
 #define OPCODE_MASK (0x3f)
 #define REGISTER_MASK (0x1f)
 #define IMMEDIATE_MASK_21BIT (0x1fffff)
@@ -85,7 +87,8 @@ typedef enum opcode {
     /* The number of opcodes. */
     OPCODE_COUNT
 } opcode_t;
-
+/* 6 bits for opcode identifers */
+compile_assert(OPCODE_COUNT < 64);
 
 typedef enum registers {
     NOT_A_REGISTER = -1,
@@ -111,6 +114,8 @@ typedef enum registers {
     /* The number of registers. */
     REGISTER_COUNT
 } register_t;                                   /* 24 */
+/* 5 bits for register identifiers. */
+compile_assert(REGISTER_COUNT < 32);
 
 #endif
 
