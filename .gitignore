@@ -39,7 +39,7 @@ obj/
 .ycm_*
 
 # emacs
-.*
+.dir-locals.el
 *~
 \#*\#
 /.emacs.dekstop
